@@ -3,7 +3,7 @@
     "name": "shakecast",
     "organization": "U.S. Geological Survey",
     "description": "Application for rapid ShakeMap distribution",
-    "version": "4.2.3",
+    "version": "4.2.4",
     "status": "Development",
 
     "permissions": {
@@ -11,15 +11,15 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.2.4/LICENSE.md"
         }
       ]
     },
 
-    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
-    "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.2.3/shakecast-4.2.3.zip",
-    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
-    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast",
+    "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.2.4/shakecast-4.2.4.zip",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.2.4/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast.git",
     "vcs": "git",
 
     "laborHours": 0,
@@ -63,15 +63,15 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.2.0/LICENSE.md"
         }
       ]
     },
 
-    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast",
     "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.2.0/shakecast-4.2.0.zip",
-    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
-    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.2.0/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast.git",
     "vcs": "git",
 
     "laborHours": 0,
@@ -115,15 +115,15 @@
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.1.0/LICENSE.md"
         }
       ]
     },
 
-    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast",
     "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.1.0/shakecast-4.1.0.zip",
-    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
-    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/raw/4.1.0/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast.git",
     "vcs": "git",
 
     "laborHours": 0,
