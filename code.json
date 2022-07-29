@@ -48,7 +48,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2022-07-28"
+      "metadataLastUpdated": "2022-07-29"
     }
   },
   {
@@ -97,10 +97,6 @@
     "contact": {
       "name": "Kuo-Wan Lin",
       "email": "klin@usgs.gov"
-    },
-
-    "updated": {
-      "metadataLastUpdated": "2021-8-01"
     }
   },
   {
@@ -149,10 +145,6 @@
     "contact": {
       "name": "Daniel Slosky",
       "email": "dslosky@usgs.gov"
-    },
-    
-    "updated": {
-      "metadataLastUpdated": "2021-1-01"
     }
   }
 ]
