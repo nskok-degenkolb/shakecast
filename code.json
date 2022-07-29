@@ -1,37 +1,158 @@
-{
-  "name": "shakecast",
-  "organization": "U.S. Geological Survey",
-  "description": "Application for rapid ShakeMap distribution",
-  "status": "Production",
-  "homepage": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
-  "downloadURL": "https://github.com/usgs/shakecast/archive/master.zip",
-  "openSourceProject": 1,
-  "license": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md",
-  "vcs": "git",
-  "repository": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+[
+  {
+    "name": "shakecast",
+    "organization": "U.S. Geological Survey",
+    "description": "Application for rapid ShakeMap distribution",
+    "version": "4.2.3",
+    "status": "Development",
 
-  "tags": [
-    "earthquake",
-    "impact",
-    "losses",
-    "shakemap",
-    "notifications",
-    "shaking"
-  ],
-  "languages": [
-    "python",
-    "typescript",
-    "html",
-    "css",
-    "shell",
-    "batch"
-  ],
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+        }
+      ]
+    },
 
-  "contact": {
-    "name": "Daniel Slosky",
-    "email": "dslosky@usgs.gov"
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
+    "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.2.3/shakecast-4.2.3.zip",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "vcs": "git",
+
+    "laborHours": 0,
+
+    "tags": [
+      "earthquake",
+      "impact",
+      "losses",
+      "shakemap",
+      "notifications",
+      "shaking"
+    ],
+
+    "languages": [
+      "python",
+      "typescript",
+      "html",
+      "css",
+      "shell",
+      "batch"
+    ],
+
+    "contact": {
+      "name": "Kuo-Wan Lin",
+      "email": "klin@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2022-07-28"
+    }
   },
-  "updated": {
-    "metadataLastUpdated": "2021-1-01"
+  {
+    "name": "shakecast",
+    "organization": "U.S. Geological Survey",
+    "description": "Application for rapid ShakeMap distribution",
+    "version": "4.2.0",
+    "status": "Production",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
+    "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.2.0/shakecast-4.2.0.zip",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "vcs": "git",
+
+    "laborHours": 0,
+
+    "tags": [
+      "earthquake",
+      "impact",
+      "losses",
+      "shakemap",
+      "notifications",
+      "shaking"
+    ],
+
+    "languages": [
+      "python",
+      "typescript",
+      "html",
+      "css",
+      "shell",
+      "batch"
+    ],
+
+    "contact": {
+      "name": "Kuo-Wan Lin",
+      "email": "klin@usgs.gov"
+    },
+
+    "updated": {
+      "metadataLastUpdated": "2021-8-01"
+    }
+  },
+  {
+    "name": "shakecast",
+    "organization": "U.S. Geological Survey",
+    "description": "Application for rapid ShakeMap distribution",
+    "version": "4.1.0",
+    "status": "Production",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite",
+    "downloadURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast/-/archive/4.1.0/shakecast-4.1.0.zip",
+    "disclaimerURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite/-/blob/master/DISCLAIMER.md",
+    "repositoryURL": "https://code.usgs.gov/ghsc/esi/shakecast/shakecast-lite.git",
+    "vcs": "git",
+
+    "laborHours": 0,
+
+    "tags": [
+      "earthquake",
+      "impact",
+      "losses",
+      "shakemap",
+      "notifications",
+      "shaking"
+    ],
+
+    "languages": [
+      "python",
+      "typescript",
+      "html",
+      "css",
+      "shell",
+      "batch"
+    ],
+
+    "contact": {
+      "name": "Daniel Slosky",
+      "email": "dslosky@usgs.gov"
+    },
+    
+    "updated": {
+      "metadataLastUpdated": "2021-1-01"
+    }
   }
-}
+]
