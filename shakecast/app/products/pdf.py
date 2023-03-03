@@ -72,6 +72,7 @@ def add_header_to_pdf(pdf, shakemap, configs):
     pdf.multi_cell(pdf.w, pdf.font_size + 5, title)
 
     pdf.set_font(font, 'b', 14)
+    pdf.multi_cell(pdf.w, pdf.font_size, 'Confidential Information')
     pdf.multi_cell(pdf.w, pdf.font_size, shakemap.event.title)
 
     pdf.set_font(font, style, size)
