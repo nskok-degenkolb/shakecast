@@ -257,7 +257,7 @@ def inspection_notification(notification=None,
                     if user.__dict__.get(not_format, False)]
             
             if len(you) > 0:
-                subject = '{0} {1}'.format('CONFIDENTIAL Inspection - ', shakemap.event.title.encode('utf-8'))
+                subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Group:', group,' Inspection -', shakemap.event.title.encode('utf-8'))
 
                 if scenario is True:
                     subject = 'SCENARIO: ' + subject
