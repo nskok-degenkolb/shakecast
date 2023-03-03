@@ -30,7 +30,7 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
 
     tm = TemplateManager()
     configs = tm.get_configs('pdf', template_name or 'default.json')
-    add_header_to_pdf(pdf, shakemap, configs['header'])
+    add_header_to_pdf(pdf, shakemap, configs['header'], group)
 
     pdf.ln(pdf.font_size * 2)
     add_summary_to_pdf(pdf, shakemap)
@@ -61,18 +61,19 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     return pdf_string
 
 
-def add_header_to_pdf(pdf, shakemap, configs):
+def add_header_to_pdf(pdf, shakemap, configs, group):
     font = pdf.font_family
     style = pdf.font_style
     size = pdf.font_size_pt
 
     title = configs.get('title', 'ShakeCast Report')
-
+    
     pdf.set_font(font, 'b', 36)
     pdf.multi_cell(pdf.w, pdf.font_size + 5, title)
 
     pdf.set_font(font, 'b', 14)
     pdf.multi_cell(pdf.w, pdf.font_size, 'Confidential Information')
+    pdf.multi_cell(pdf.w, pdf.font_size, '{0} {1}'.format('Group: ',group))
     pdf.multi_cell(pdf.w, pdf.font_size, shakemap.event.title)
 
     pdf.set_font(font, style, size)
