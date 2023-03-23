@@ -70,50 +70,51 @@ def new_event_notification(notifications=None,
     mime_message = MIMEText(message, message_type)
     msg.attach(mime_message)
 
-    # get and attach map
-    for count,event in enumerate(events):
-        map_image = get_image(os.path.join(event.directory_name,
-                                    'image.png'))
-
-        msg_gmap = MIMEImage(map_image.read(), _subtype='png')
-        map_image.close()
-        
-        msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
-        msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
-        msg.attach(msg_gmap)
-
-        # get and attach shakemap
-        if len(event.shakemaps) > 0:
-            shakemap = event.shakemaps[-1]
-            msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
-            msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
-            msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
-            msg.attach(msg_shakemap)
-
     # find the ShakeCast logo
     temp_manager = TemplateManager()
     configs = temp_manager.get_configs('new_event', 
-                                        name=notification.group.template)
+                                        name=group.template)
     logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
-    
-    # open logo and attach it to the message
-    logo_file = get_image(logo_str)
-    msg_image = MIMEImage(logo_file.read(), _subtype='png')
-    logo_file.close()
-    msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
-    msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
-    msg.attach(msg_image)
-    
-    # attach a header if it's needed
-    if configs.get('header'):
-        header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
-        if os.path.isfile(header_str):
-            header_file = get_image(header_str)
-            msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
-            header_file.close()
-            msg_image.add_header('Content-ID', 'header')
-            msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
-            msg.attach(msg_image)
+
+    if configs.get('text_only', False) is False:
+        # get and attach map
+        for count,event in enumerate(events):
+            map_image = get_image(os.path.join(event.directory_name,
+                                        'image.png'))
+
+            msg_gmap = MIMEImage(map_image.read(), _subtype='png')
+            map_image.close()
+            
+            msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
+            msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
+            msg.attach(msg_gmap)
+
+            # get and attach shakemap
+            if len(event.shakemaps) > 0:
+                shakemap = event.shakemaps[-1]
+                msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
+                msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
+                msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
+                msg.attach(msg_shakemap)
+
+        # open logo and attach it to the message
+        logo_file = get_image(logo_str)
+        msg_image = MIMEImage(logo_file.read(), _subtype='png')
+        logo_file.close()
+        msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
+        msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
+        msg.attach(msg_image)
+        
+        # attach a header if it's needed
+        if configs.get('header'):
+            header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
+            if os.path.isfile(header_str):
+                header_file = get_image(header_str)
+                msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
+                header_file.close()
+                msg_image.add_header('Content-ID', 'header')
+                msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
+                msg.attach(msg_image)
 
     mailer = Mailer()
     me = mailer.me
@@ -214,36 +215,37 @@ def inspection_notification(notification=None,
                     print('Unable to attach: {}'.format(product.product_type.name))
                     product.error = 'Unable to attach to email'
 
-            # get and attach shakemap
-            msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
-            msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
-            msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
-            msg.attach(msg_shakemap)
-            
             # find the ShakeCast logo
             temp_manager = TemplateManager()
             configs = temp_manager.get_configs('inspection',
-                                        name=notification.group.template)
+                                        name=group.template)
             logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
-            
-            # open logo and attach it to the message
-            logo_file = open(logo_str, 'rb')
-            msg_image = MIMEImage(logo_file.read(), _subtype='png')
-            logo_file.close()
-            msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
-            msg.attach(msg_image)
-            
-            # attach a header if it's needed
-            if configs.get('header'):
-                header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
-                if os.path.isfile(header_str):
-                    header_file = get_image(header_str)
-                    msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
-                    header_file.close()
-                    msg_image.add_header('Content-ID', 'header')
-                    msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
-                    msg.attach(msg_image)
+
+            if configs.get('text_only', False) is False:
+                # get and attach shakemap
+                msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
+                msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
+                msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
+                msg.attach(msg_shakemap)
+                
+                # open logo and attach it to the message
+                logo_file = open(logo_str, 'rb')
+                msg_image = MIMEImage(logo_file.read(), _subtype='png')
+                logo_file.close()
+                msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
+                msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
+                msg.attach(msg_image)
+                
+                # attach a header if it's needed
+                if configs.get('header'):
+                    header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
+                    if os.path.isfile(header_str):
+                        header_file = get_image(header_str)
+                        msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
+                        header_file.close()
+                        msg_image.add_header('Content-ID', 'header')
+                        msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
+                        msg.attach(msg_image)
 
             mailer = Mailer()
             me = mailer.me

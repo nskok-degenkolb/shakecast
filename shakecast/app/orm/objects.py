@@ -654,12 +654,14 @@ class Group(Base):
                         lon_min=%s,
                         lon_max=%s,
                         lat_min=%s,
-                        lat_max=%s)''' % (self.name,
+                        lat_max=%s,
+                        template=%s)''' % (self.name,
                                           self.facility_type,
                                           self.lon_min,
                                           self.lon_max,
                                           self.lat_min,
-                                          self.lat_max)
+                                          self.lat_max,
+                                          self.template)
 
     def __str__(self):
         return self.name
