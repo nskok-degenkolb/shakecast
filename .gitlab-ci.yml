@@ -192,8 +192,6 @@ job:on-schedule:
   stage: test
   extends: 
     - .shakecast-dev
-    - .dind
-    - .build
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - when: manual
