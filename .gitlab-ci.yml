@@ -190,13 +190,17 @@ publish-python:
 
 job:on-schedule:
   stage: test
-  extends:
+  extends: 
     - .shakecast-dev
+    - .dind
+    - .build
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - when: manual
   script:
-    - docker build --build-arg "FROM_IMAGE=usgs/obspy:3.8" . -t usgs/shakecast:${CI_PIPELINE_ID}
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --build-arg "FROM_IMAGE=${DEVOPS_REGISTRY}usgs/obspy:3.8" . -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/shakecast:${CI_PIPELINE_ID}
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/shakecast:${CI_PIPELINE_ID}
   after_script:
-    - docker rmi usgs/shakecast:${CI_PIPELINE_ID}
+    - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/shakecast:${CI_PIPELINE_ID}
 
