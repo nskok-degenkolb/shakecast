@@ -204,7 +204,7 @@ job:on-schedule:
 
   stage: publish
   image:
-    name: ${CODE_REGISTRY_IMAGE}/shakecast:daily_${CI_PIPELINE_ID}
+    name: ${CODE_REGISTRY_IMAGE}/shakecast:latest
     entrypoint: [""]
   extends:
     - .shakecast-dev
