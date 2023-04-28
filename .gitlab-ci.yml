@@ -201,19 +201,3 @@ job:on-schedule:
     - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily_${CI_PIPELINE_ID}
   after_script:
     - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily_${CI_PIPELINE_ID}
-
-  stage: publish
-  image:
-    name: ${CODE_REGISTRY_IMAGE}/shakecast:latest
-    entrypoint: [""]
-  extends:
-    - .release
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-    - when: manual
-  script:
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install setuptools wheel twine
-    - python3 setup.py bdist_wheel
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python3 -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
-
