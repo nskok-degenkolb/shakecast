@@ -207,7 +207,7 @@ job:on-schedule:
     name: ${CODE_REGISTRY_IMAGE}/shakecast:daily_${CI_PIPELINE_ID}
     entrypoint: [""]
   extends:
-    - .release
+    - .shakecast-dev
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - when: manual
