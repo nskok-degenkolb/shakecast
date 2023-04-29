@@ -211,6 +211,8 @@ job:on-schedule:
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - when: manual
+  before_script:
+    - echo ${CI_COMMIT_REF_NAME} > shakecast/version
   script:
     - python3 -m pip install --upgrade pip
     - python3 -m pip install setuptools wheel twine
