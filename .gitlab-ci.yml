@@ -186,7 +186,7 @@ publish-python:
     - python3 -m pip install --upgrade pip
     - python3 -m pip install setuptools wheel twine
     - python3 setup.py bdist_wheel
-    - twine upload dist/*
+    - TWINE_PASSWORD=${TWINE_PASSWORD} TWINE_USERNAME=${TWINE_USERNAME} python3 -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 
 job:on-schedule:
   stage: build
@@ -201,21 +201,3 @@ job:on-schedule:
     - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
   after_script:
     - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
-
-  stage: build
-  image:
-    name: ${CODE_REGISTRY_IMAGE}/shakecast:latest
-    entrypoint: [""]
-  extends:
-    - .shakecast-dev
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-    - when: manual
-  before_script:
-    - echo ${CI_COMMIT_REF_NAME} > shakecast/version
-  script:
-    - python3 -m pip install --upgrade pip
-    - python3 -m pip install setuptools wheel twine
-    - python3 setup.py bdist_wheel
-    - TWINE_PASSWORD=${TWINE_PASSWORD} TWINE_USERNAME=${TWINE_USERNAME} python3 -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
-
