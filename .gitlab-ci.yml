@@ -217,5 +217,5 @@ job:on-schedule:
     - python3 -m pip install --upgrade pip
     - python3 -m pip install setuptools wheel twine
     - python3 setup.py bdist_wheel
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 
