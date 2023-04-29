@@ -9,8 +9,8 @@ variables:
   DOCKER_DRIVER: overlay2
   GIT_STRATEGY: clone
   IMAGE_NAME: "${CI_PROJECT_NAME}:${CI_PIPELINE_ID}"
-  TWINE_USERNAME: ${PYPI_USERNAME}
-  TWINE_PASSWORD: ${PYPI_PASSWORD}
+  #TWINE_USERNAME: ${PYPI_USERNAME}
+  #TWINE_PASSWORD: ${PYPI_PASSWORD}
 
 stages:
   - build
@@ -197,7 +197,23 @@ job:on-schedule:
     - when: manual
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build --build-arg "FROM_IMAGE=${DEVOPS_REGISTRY}usgs/obspy:3.8" . -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily_${CI_PIPELINE_ID}
-    - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily_${CI_PIPELINE_ID}
+    - docker build --build-arg "FROM_IMAGE=${DEVOPS_REGISTRY}usgs/obspy:3.8" . -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
   after_script:
-    - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily_${CI_PIPELINE_ID}
+    - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
+
+  stage: build
+  image:
+    name: ${CODE_REGISTRY_IMAGE}/shakecast:latest
+    entrypoint: [""]
+  extends:
+    - .shakecast-dev
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - when: manual
+  script:
+    - python3 -m pip install --upgrade pip
+    - python3 -m pip install setuptools wheel twine
+    - python3 setup.py bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+
