@@ -9,8 +9,8 @@ variables:
   DOCKER_DRIVER: overlay2
   GIT_STRATEGY: clone
   IMAGE_NAME: "${CI_PROJECT_NAME}:${CI_PIPELINE_ID}"
-  TWINE_USERNAME: ${PYPI_USERNAME}
-  TWINE_PASSWORD: ${PYPI_PASSWORD}
+  #TWINE_USERNAME: ${PYPI_USERNAME}
+  #TWINE_PASSWORD: ${PYPI_PASSWORD}
 
 stages:
   - build
@@ -186,17 +186,18 @@ publish-python:
     - python3 -m pip install --upgrade pip
     - python3 -m pip install setuptools wheel twine
     - python3 setup.py bdist_wheel
-    - twine upload dist/*
+    - TWINE_PASSWORD=${TWINE_PASSWORD} TWINE_USERNAME=${TWINE_USERNAME} python3 -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
 
 job:on-schedule:
-  stage: test
-  extends:
+  stage: build
+  extends: 
     - .shakecast-dev
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     - when: manual
   script:
-    - docker build --build-arg "FROM_IMAGE=usgs/obspy:3.8" . -t usgs/shakecast:${CI_PIPELINE_ID}
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build --build-arg "FROM_IMAGE=${DEVOPS_REGISTRY}usgs/obspy:3.8" . -t ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
+    - docker push ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
   after_script:
-    - docker rmi usgs/shakecast:${CI_PIPELINE_ID}
-
+    - docker rmi ${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}:daily
