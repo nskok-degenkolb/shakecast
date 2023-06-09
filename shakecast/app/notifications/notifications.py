@@ -316,10 +316,12 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
 
         prev_alert_level = previous_map.get_alert_level(group)
 
-        # ignore changes if they don't merit inspection (grey and None)
+        # ignore changes if they don't merit inspection (grey and None); NRS added third condition if previous alert is none and new is gray then do not send a notification.
         if (((prev_alert_level is None) and 
                 (alert_level is None)) or
                 ((prev_alert_level == 'gray') and
+                (alert_level == 'gray')) or 
+                ((prev_alert_level is None) and
                 (alert_level == 'gray'))):
             new_inspection = False
 
