@@ -299,9 +299,16 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
     # Check that the inspection status merits a sent notification
     alert_level = shakemap.get_alert_level(group)
 
+    #NRS - do not send an inspection if alert_level is gray or None. A group is determined to be affected by an event if it is present within shakemap boundaries. The original code would send a new inspection notification regardless of alert_level. 
+    if (alert_level is None) or (alert_level == 'gray'):
+        new_inspection = False
+        update = False
+    else:
+        new_inspection = True
+        update = False
+    # End NRS modificaiton 
+    
     # check if inspection list has changed
-    new_inspection = True
-    update = False
     if shakemap.old_maps():
         update = True
         new_inspection = False
@@ -316,12 +323,16 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
         prev_alert_level = previous_map.get_alert_level(group)
 
         # ignore changes if they don't merit inspection (grey and None)
+        # Start NRS - add third condition if previous alert is third condition if previous alert is none and new is gray then do not send a notification.
         if (((prev_alert_level is None) and 
                 (alert_level is None)) or
                 ((prev_alert_level == 'gray') and
+                (alert_level == 'gray')) or 
+                ((prev_alert_level is None) and
                 (alert_level == 'gray'))):
             new_inspection = False
-
+        # End NRS
+        
         # if overall inspection level changes, send notification
         elif prev_alert_level != alert_level:
             new_inspection = True
@@ -336,7 +347,7 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
                         previous_map.facility_shaking[idx].facility.facility_id):
                     new_inspection = True
                     break
-
+    
     return group.has_alert_level(alert_level, scenario), new_inspection, update
 
 
