@@ -257,7 +257,7 @@ def inspection_notification(notification=None,
             
             if len(you) > 0:
                 # NRS modify subject content
-                subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group,' -', shakemap.event.title.encode('utf-8'))
+                subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group,' ', shakemap.event.title.encode('utf-8'))
                 #subject = f'Inspection -  {shakemap.event.title}'
 
                 if scenario is True:
