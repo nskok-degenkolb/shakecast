@@ -33,7 +33,8 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     add_header_to_pdf(pdf, shakemap, configs['header'])
 
     pdf.ln(pdf.font_size * 2)
-    add_summary_to_pdf(pdf, shakemap)
+    #NRS update summary to consider only facilties within the group
+    add_summary_to_pdf(pdf, shakemap, group)
 
     try:
         add_impact_image_to_pdf(pdf, shakemap)
@@ -121,12 +122,17 @@ def add_shakemap_details_to_pdf(pdf, shakemap):
     pdf.set_font(font, style, size)
 
 
-def add_summary_to_pdf(pdf, shakemap):
+def add_summary_to_pdf(pdf, shakemap, group):
     font = pdf.font_family
     style = pdf.font_style
     size = pdf.font_size_pt
-
-    impact = get_event_impact(shakemap.facility_shaking)
+    
+    #NRS only consider facilities in the group being reported.
+    facility_shaking = sorted(
+        shakemap.facility_shaking, key=lambda x: x.weight, reverse=True)
+    facility_shaking = [x for x in facility_shaking if group in x.facility.groups]
+    
+    impact = get_event_impact(facility_shaking)
 
     details_height = pdf.font_size + 2
     font = pdf.font_family
