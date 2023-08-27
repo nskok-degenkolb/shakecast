@@ -11,7 +11,7 @@
   "table": {
       "border_color": "gray"
   }, 
-  "logo": "sc_logo.png", 
+  "logo": "sc_logo.jpg", 
   "admin_email": "sc.admin@localhost", 
   "type": "new_event", 
   "body_color": "white", 
