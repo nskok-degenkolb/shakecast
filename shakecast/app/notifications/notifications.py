@@ -80,7 +80,7 @@ def new_event_notification(notifications=None,
             msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
             msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
             msg.attach(msg_shakemap)        
-        else
+        else:
             map_image = get_image(os.path.join(event.directory_name,
                                         'image.png'))
             msg_gmap = MIMEImage(map_image.read(), _subtype='png')
