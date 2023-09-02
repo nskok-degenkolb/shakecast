@@ -73,23 +73,22 @@ def new_event_notification(notifications=None,
 
     # get and attach map
     for count,event in enumerate(events):
-        map_image = get_image(os.path.join(event.directory_name,
-                                    'image.png'))
-
-        msg_gmap = MIMEImage(map_image.read(), _subtype='png')
-        map_image.close()
-        
-        msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
-        msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
-        msg.attach(msg_gmap)
-
         # get and attach shakemap
         if len(event.shakemaps) > 0:
             shakemap = event.shakemaps[-1]
             msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
             msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
             msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
-            msg.attach(msg_shakemap)
+            msg.attach(msg_shakemap)        
+        else
+            map_image = get_image(os.path.join(event.directory_name,
+                                        'image.png'))
+            msg_gmap = MIMEImage(map_image.read(), _subtype='png')
+            map_image.close()
+            
+            msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
+            msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
+            msg.attach(msg_gmap)
 
     # find the ShakeCast logo
     temp_manager = TemplateManager()
@@ -229,10 +228,10 @@ def inspection_notification(notification=None,
             
             # open logo and attach it to the message
             logo_file = open(logo_str, 'rb')
-            msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
+            msg_image = MIMEImage(logo_file.read(), _subtype='png')
             logo_file.close()
             msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
             msg.attach(msg_image)
             
             # attach a header if it's needed
