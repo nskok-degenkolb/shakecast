@@ -63,7 +63,8 @@ def new_event_notification(notifications=None,
     notification.generated_timestamp = time.time()
 
     #initiate message
-    msg = MIMEMultipart()
+    #NRS - adde 'related' to try and stop images from showing up as attachments. 
+    msg = MIMEMultipart('related')
     
     # attach html
     message_type = 'html' if '<html>' in message else 'plain'
