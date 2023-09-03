@@ -187,7 +187,7 @@ def inspection_notification(notification=None,
     if has_alert_level and new_inspection:
         try:
             #initiate message
-            msg = MIMEMultipart()
+            msg = MIMEMultipart('related')
 
             # build the notification
             print('Generating html...')
