@@ -14,11 +14,11 @@
                     <td>
                         {% if web is sameas false %}
                         <img alt="ShakeCast Logo"
-                                style="border-radius:50%;max-height:70px;max-width:70px;display:inline-block"
+                                style="border-radius:50%;height:70px;width:70px;display:inline-block"
                                 src="cid:sc_logo_{{ notification.shakecast_id }}">
                         {% else %}
                         <img alt="ShakeCast Logo"
-                                style="display:inline-block;border-radius:50%;max-height:70px;max-width:70px;"
+                                style="display:inline-block;border-radius:50%;height:70px;width:70px;"
                                 src="assets/{{ config.logo }}">
                         {% endif %}
                     </td>
@@ -115,7 +115,7 @@
                     {% for event in events %}
                     <tr>
                         <td>
-                            <img alt="Epicenter map is not available at this time"
+                            <img width=200 height=200 alt="Epicenter map is not available at this time"
                                     src="{{'https://api.mapbox.com/styles/v1/mapbox/streets-v10/static/pin-s+F00({0},{1})/{0},{1},5/200x200?access_token={2}'.format(event.lon,
                                     event.lat,
                                     sc.map_key)}}">
