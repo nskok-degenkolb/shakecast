@@ -199,21 +199,6 @@ def inspection_notification(notification=None,
             mime_message = MIMEText(message, message_type)
             msg.attach(mime_message)
 
-            # check for and attach local products
-            for product in shakemap.local_products:
-                if product.error or product.group != group:
-                    continue
-
-                try:
-                    content = product.read()
-                    attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
-                    attach_product.add_header('Content-Disposition', 'attachment', filename=product.name)
-                    msg.attach(attach_product)
-                    print('Attached: {}'.format(product.product_type.name))
-                except Exception as e:
-                    print('Unable to attach: {}'.format(product.product_type.name))
-                    product.error = 'Unable to attach to email'
-
             # get and attach shakemap
             msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
             msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
@@ -244,6 +229,21 @@ def inspection_notification(notification=None,
                     msg_image.add_header('Content-ID', 'header')
                     msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
                     msg.attach(msg_image)
+            
+            # check for and attach local products
+            for product in shakemap.local_products:
+                if product.error or product.group != group:
+                    continue
+
+                try:
+                    content = product.read()
+                    attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
+                    attach_product.add_header('Content-Disposition', 'attachment', filename=product.name)
+                    msg.attach(attach_product)
+                    print('Attached: {}'.format(product.product_type.name))
+                except Exception as e:
+                    print('Unable to attach: {}'.format(product.product_type.name))
+                    product.error = 'Unable to attach to email'
 
             mailer = Mailer()
             me = mailer.me
