@@ -228,10 +228,10 @@ def inspection_notification(notification=None,
             
             # open logo and attach it to the message
             logo_file = open(logo_str, 'rb')
-            msg_image = MIMEImage(logo_file.read(), _subtype='png')
+            msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
             logo_file.close()
             msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
+            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
             msg.attach(msg_image)
             
             # attach a header if it's needed
