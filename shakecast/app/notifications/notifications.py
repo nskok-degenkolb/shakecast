@@ -216,7 +216,7 @@ def inspection_notification(notification=None,
             msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
             logo_file.close()
             msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-            msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+            # NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
             msg.attach(msg_image)
             
             # attach a header if it's needed
