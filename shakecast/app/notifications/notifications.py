@@ -130,10 +130,17 @@ def new_event_notification(notifications=None,
     if group_str.find('_scenario') > -1:
         group_str = group_str.replace('_scenario','')
         
+    # capitalize Providence, all caps for other groups    
+    if group_str.find('providence') > -1 :
+        groupFormat_str = group_str.capitalize()
+    else:
+        groupFormat_str = group_str.upper()
+        
     if len(you) > 0:
         if len(events) == 1:
             #subject = event.title
-            subject = '{0} EQ - {1}'.format(group_str.capitalize(), event.title)
+
+            subject = '{0} EQ - {1}'.format(groupFormat_str, event.title)
         else:
             mags = []
             for e in events:
@@ -142,7 +149,7 @@ def new_event_notification(notifications=None,
                 else:
                     mags += [e.magnitude]
 
-            subject = '{0} - {1} New Events - Magnitudes: {2}'.format(group_str.capitalize(),len(events),
+            subject = '{0} - {1} New Events - Magnitudes: {2}'.format(groupFormat_str,len(events),
                                                                         str(mags).replace("'", ''))
 
         if scenario is True:
@@ -275,7 +282,7 @@ def inspection_notification(notification=None,
                 if group_str.find('providence') > -1 :
                     subject = '{0} {1} {2}'.format(group_str.capitalize(),' - Post-EQ Potential Inspection List - ', event_str)
                 else:
-                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group_str,' ', event_str)
+                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group_str.upper(),' ', event_str)
                 #subject = f'Inspection -  {shakemap.event.title}'
 
                 if scenario is True:
