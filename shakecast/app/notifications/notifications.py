@@ -125,9 +125,15 @@ def new_event_notification(notifications=None,
     you = [user.__dict__[not_format] for user in group.users
             if user.__dict__.get(not_format, False)]
 
+    # Remove scenario from the group name
+    group_str = group.lower()
+    if group_str.find('_scenario') > -1:
+        group_str = group_str.replace('_scenario','')
+        
     if len(you) > 0:
         if len(events) == 1:
             subject = event.title
+            subject = '{0} EQ - {1}'.format(group_str.capitalize(), event.title)
         else:
             mags = []
             for e in events:
@@ -136,7 +142,7 @@ def new_event_notification(notifications=None,
                 else:
                     mags += [e.magnitude]
 
-            subject = '{0} New Events -- Magnitudes: {1}'.format(len(events),
+            subject = '{0} - {1} New Events - Magnitudes: {2}'.format(group_str.capitalize(),len(events),
                                                                         str(mags).replace("'", ''))
 
         if scenario is True:
@@ -260,10 +266,16 @@ def inspection_notification(notification=None,
                 event_str = shakemap.event.title
                 #event_str = event_str.replace('\'','')
                 #event_str = event_str.replace('b','')
-                if (group.lower()).find('providence') > -1 :
-                    subject = '{0} {1} {2}'.format((group.lower()).capitalize(),' - Post-EQ Potential Inspection List - ', event_str)
+                group_str = group.lower()
+                
+                # Remove scenario from the group name
+                if group_str.find('_scenario') > -1:
+                    group_str = group_str.replace('_scenario','')
+                
+                if group_str.find('providence') > -1 :
+                    subject = '{0} {1} {2}'.format(group_str.capitalize(),' - Post-EQ Potential Inspection List - ', event_str)
                 else:
-                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group,' ', event_str)
+                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group_str,' ', event_str)
                 #subject = f'Inspection -  {shakemap.event.title}'
 
                 if scenario is True:
