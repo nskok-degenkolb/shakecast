@@ -260,7 +260,10 @@ def inspection_notification(notification=None,
                 event_str = shakemap.event.title
                 #event_str = event_str.replace('\'','')
                 #event_str = event_str.replace('b','')
-                subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group,' ', event_str)
+                if (group.lower()).find('providence') > -1 :
+                    subject = '{0} {1} {2}'.format((group.lower()).capitalize(),' - Post-EQ Potential Inspection List - ', event_str)
+                else:
+                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group,' ', event_str)
                 #subject = f'Inspection -  {shakemap.event.title}'
 
                 if scenario is True:
