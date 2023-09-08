@@ -126,13 +126,13 @@ def new_event_notification(notifications=None,
             if user.__dict__.get(not_format, False)]
 
     # Remove scenario from the group name
-    group_str = group.lower()
+    group_str = (group.name).lower()
     if group_str.find('_scenario') > -1:
         group_str = group_str.replace('_scenario','')
         
     if len(you) > 0:
         if len(events) == 1:
-            subject = event.title
+            #subject = event.title
             subject = '{0} EQ - {1}'.format(group_str.capitalize(), event.title)
         else:
             mags = []
@@ -266,7 +266,7 @@ def inspection_notification(notification=None,
                 event_str = shakemap.event.title
                 #event_str = event_str.replace('\'','')
                 #event_str = event_str.replace('b','')
-                group_str = group.lower()
+                group_str = (group.name).lower()
                 
                 # Remove scenario from the group name
                 if group_str.find('_scenario') > -1:
