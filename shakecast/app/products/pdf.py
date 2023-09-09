@@ -57,7 +57,10 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     pdf_string = pdf.output('', 'S')
 
     if save is True:
-        pdf_name = pdf_name or 'impact.pdf'
+        #pdf_name = pdf_name or 'impact.pdf'
+        # NRS revise filename to include date. 
+        myTimeFmt = time.strftime("%y%m%d-%H%M",time.localtime())
+        pdf_name ='{0}rpt_{1}_impact.pdf'.format(myTimeFmt,group.name)
         save_pdf(pdf_string, pdf_name, shakemap.local_products_dir)
     return pdf_string
 
