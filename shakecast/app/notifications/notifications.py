@@ -250,8 +250,9 @@ def inspection_notification(notification=None,
 
                 try:
                     content = product.read()
+                    # NRS addition, try to format the name of the pdf attached. 
                     attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
-                    attach_product.add_header('Content-Disposition', 'attachment', filename=product.name)
+                    attach_product.add_header('Content-Disposition', 'attachment', filename='Test_{0}'.format(product.name))
                     msg.attach(attach_product)
                     print('Attached: {}'.format(product.product_type.name))
                 except Exception as e:
