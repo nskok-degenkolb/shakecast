@@ -186,6 +186,11 @@ def add_summary_to_pdf(pdf, shakemap, group):
 
 
 def add_pdf_table(pdf, headers, data):
+    pdf.set_font(font, 'b', 18)
+    pdf.multi_cell(0, pdf.font_size, 'Inspection List')
+    pdf.set_font(font, '', 10)
+    pdf.ln(pdf.font_size)
+    
     use_headers = [header for header in headers if header['use']]
 
     page_width = pdf.w - 2 * pdf.l_margin
