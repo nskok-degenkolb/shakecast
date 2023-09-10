@@ -14,12 +14,20 @@ class Pdf(FPDF):
         super(Pdf, self).__init__()
 
         self.set_font('Arial', '', 10)
-
+    #NRS add header
+    def header(self):
+        # Position at 1.5 cm from top
+        self.set_y(15)
+        # Arial italic 8
+        self.set_font('Arial', 'BI', 10)
+        # Page number
+        self.cell(0, 10, 'Confidential Information', 0, 0, 'C')
+        
     def footer(self):
         # Position at 1.5 cm from bottom
         self.set_y(-15)
         # Arial italic 8
-        self.set_font('Arial', 'I', 8)
+        self.set_font('Arial', 'BI', 10)
         # Page number
         self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
 
@@ -31,7 +39,7 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     tm = TemplateManager()
     configs = tm.get_configs('pdf', template_name or 'default.json')
     add_header_to_pdf(pdf, shakemap, configs['header'])
-
+    
     pdf.ln(pdf.font_size * 2)
     #NRS update summary to consider only facilties within the group
     add_summary_to_pdf(pdf, shakemap, group)
@@ -52,6 +60,14 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     facility_shaking = [x for x in facility_shaking if group in x.facility.groups]
     add_pdf_table(pdf, configs['table']['table_head'],
                   facility_shaking)
+    # NRS - Add disclosure
+    pdf.add_page()
+    pdf.set_font(font, 'b', 18)
+    pdf.multi_cell(pdf.w, pdf.font_size, 'Confidentiality and Disclaimer Notice')
+    pdf.set_font(font, '', 14)
+
+    myDisclaimer = 'This automated email message is confidential and intended soley for Providence. If received in error, please notify the sender and delete the email and any attachments from your system. The results provided herein are computer-generated building damage estimates and may not accurately represent the actual conditions or extent of damage. They are not a subsitute for a structural evaluation by a professional engineer. Degenkolb Engineers disclaims any liability for errors or omissions and makes no warranties, express or implied, regarding accuracy or completeness. Unauthorized use, disclosure, or copying is prohibited. '
+    pdf.multi_cell(pdf.w, '', myDisclaimer)
 
     pdf.alias_nb_pages()
     pdf_string = pdf.output('', 'S')
@@ -78,7 +94,11 @@ def add_header_to_pdf(pdf, shakemap, configs):
     pdf.set_font(font, 'b', 14)
     pdf.multi_cell(pdf.w, pdf.font_size, shakemap.event.title)
 
+    #add introduction NRS
+    myIntroduction = configs.get('introduction', 'Introduction')
     pdf.set_font(font, style, size)
+    pdf.multi_cell(pdf.w, pdf.font_size,myIntroduction)
+    
 
 def add_impact_image_to_pdf(pdf, shakemap):
     width = pdf.w * .75
