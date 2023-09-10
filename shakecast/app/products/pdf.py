@@ -17,7 +17,7 @@ class Pdf(FPDF):
     #NRS add header
     def header(self):
         # Position at 1.5 cm from top
-        self.set_y(-15)
+        self.set_y(1)
         # Arial italic 8
         self.set_font('Arial', 'BI', 10)
         # Page number
