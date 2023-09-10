@@ -204,7 +204,7 @@ def add_pdf_table(pdf, headers, data):
     text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
     text3 = 'MMI – Modified Mercalli Intensity discussed on the previous page. This metric is considered by HAZUS in determining the inspection priority when structural system information is not well defined. '
     text4 = 'Peak Ground Velocity (PGV), cm/s – maximum velocity of the ground at the building site'
-    text5 = 'PSA03, % g  – Spectral acceleration response at 0.3s which is of interest to Degenkolb Engineers'
+    text5 = 'PSA03, \% g  – Spectral acceleration response at 0.3s which is of interest to Degenkolb Engineers'
     text6 = 'Metric – Value that HAZUS is considering in when estimating inspection priority.  MMI is considered where the structural system information is not well defined. Peak Ground Acceleration is considered where the structural system is defined. '
     text7 = 'Dist., km – Site distance from the epicenter'
     text8 = 'Shaking Value – Value of the metric considered by the HAZUS analysis. MMI or PGA (cm/s/s)'
@@ -304,9 +304,9 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
             pdf.multi_cell(cell_width, max_cell_height +
                            padding, str(value), border=1, fill=1)
         
-        if (pdf.get_y() - start_y) > maxCellHeightLine:
-            maxCellHeightLine = (pdf.get_y() - start_y)
-            cell_height = maxCellHeightLine
+        #if (pdf.get_y() - start_y) > maxCellHeightLine:
+        #    maxCellHeightLine = (pdf.get_y() - start_y)
+        #    cell_height = maxCellHeightLine
         
         pdf.set_text_color(0, 0, 0)
         pdf.set_font(pdf.font_family, font_style, pdf.font_size_pt)
