@@ -16,12 +16,10 @@ class Pdf(FPDF):
         self.set_font('Arial', '', 10)
     #NRS add header
     def header(self):
-        # Position at 1.5 cm from top
-        self.set_y(1)
         # Arial italic 8
         self.set_font('Arial', 'BI', 10)
         # Page number
-        self.cell(0, 10, 'Confidential Information', 0, 0, 'C')
+        self.cell(0, 10, 'Confidential Information', 0, 1, 'C')
         
     def footer(self):
         # Position at 1.5 cm from bottom
