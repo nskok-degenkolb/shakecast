@@ -34,6 +34,7 @@ class Pdf(FPDF):
 
 def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=''):
     pdf = Pdf()
+    pdf.set_margins(10,15,10)
     pdf.add_page()
 
     tm = TemplateManager()
@@ -69,7 +70,7 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
         pdf.add_page()
         pdf.set_font(font, 'b', 18)
         pdf.multi_cell(pdf.w, pdf.font_size, 'Confidentiality and Disclaimer Notice')
-        pdf.set_font(font, '', 14)
+        pdf.set_font(font, '', 10)
     
         myDisclaimer = 'This automated email message is confidential and intended soley for Providence. If received in error, please notify the sender and delete the email and any attachments from your system. The results provided herein are computer-generated building damage estimates and may not accurately represent the actual conditions or extent of damage. They are not a subsitute for a structural evaluation by a professional engineer. Degenkolb Engineers disclaims any liability for errors or omissions and makes no warranties, express or implied, regarding accuracy or completeness. Unauthorized use, disclosure, or copying is prohibited. '
         pdf.multi_cell(pdf.w, pdf.font_size, myDisclaimer)
