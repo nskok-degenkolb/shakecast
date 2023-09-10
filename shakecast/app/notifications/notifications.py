@@ -252,7 +252,7 @@ def inspection_notification(notification=None,
                     content = product.read()
                     # NRS addition, try to format the name of the pdf attached. 
                     myTime = time.strftime("%y%m%d",time.localtime())
-                    myProductName 
+                     
                     if ((product.name).lower()).find('providence') > -1 :
                         myProductName = (((product.name).lower()).replace('_impact','')).capitalize()
                     else:
