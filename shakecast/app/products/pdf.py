@@ -279,9 +279,7 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
 
         #NRS remember the maximum cell height if facility name spans multiple rows
         cell_height = get_cell_height(cell)
-        if cell_height > maxCellHeightLine:
-            maxCellHeightLine = cell_height
-            cell_height = maxCellHeightLine
+        
         
         cell.update(headers[header_pos])
         if cell.get('colors', False):
@@ -305,7 +303,11 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
         else:
             pdf.multi_cell(cell_width, max_cell_height +
                            padding, str(value), border=1, fill=1)
-
+        
+        if (pdf.get_y() - start_y) > maxCellHeightLine:
+            maxCellHeightLine = (pdf.get_y() - start_y)
+            cell_height = maxCellHeightLine
+        
         pdf.set_text_color(0, 0, 0)
         pdf.set_font(pdf.font_family, font_style, pdf.font_size_pt)
         pdf.set_xy(start_x + cell_width, start_y)
