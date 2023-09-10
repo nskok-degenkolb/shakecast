@@ -251,8 +251,15 @@ def inspection_notification(notification=None,
                 try:
                     content = product.read()
                     # NRS addition, try to format the name of the pdf attached. 
+                    myTime = time.strftime("%y%m%d",time.localtime())
+                    myProductName 
+                    if ((product.name).lower()).find('providence') > -1 :
+                        myProductName = (((product.name).lower()).replace('_impact','')).capitalize()
+                    else:
+                        myProductName = (product.name).replace('_impact','')
+                    myShakemapID = '{0}-{1}'.format(shakemap.shakemap_id,shakemap.shakemap_version)
                     attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
-                    attach_product.add_header('Content-Disposition', 'attachment', filename='Test_{0}'.format(product.name))
+                    attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Inspection_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
                     msg.attach(attach_product)
                     print('Attached: {}'.format(product.product_type.name))
                 except Exception as e:
