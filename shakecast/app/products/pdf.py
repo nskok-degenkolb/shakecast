@@ -21,6 +21,7 @@ class Pdf(FPDF):
         # Page number
         self.cell(0, 10, 'Confidential Information', 0, 1, 'C')
         
+        
     def footer(self):
         # Position at 1.5 cm from bottom
         self.set_y(-15)
@@ -32,7 +33,7 @@ class Pdf(FPDF):
 
 def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=''):
     pdf = Pdf()
-    pdf.set_margins(10,15,10)
+    pdf.set_margins(10,5,10)
     pdf.add_page()
 
     tm = TemplateManager()
