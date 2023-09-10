@@ -254,9 +254,9 @@ def inspection_notification(notification=None,
                     myTime = time.strftime("%y%m%d",time.localtime())
                      
                     if ((product.name).lower()).find('providence') > -1 :
-                        myProductName = (((product.name).lower()).replace('_impact','')).capitalize()
+                        myProductName = (((product.name).lower()).replace('_impact.pdf','')).capitalize()
                     else:
-                        myProductName = (product.name).replace('_impact','')
+                        myProductName = (product.name).replace('_impact.pdf','')
                     myShakemapID = '{0}-{1}'.format(shakemap.shakemap_id,shakemap.shakemap_version)
                     attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
                     attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Inspection_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
