@@ -55,9 +55,11 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
 
     add_shakemap_to_pdf(pdf, shakemap)
 
+    
     facility_shaking = sorted(
         shakemap.facility_shaking, key=lambda x: x.weight, reverse=True)
     facility_shaking = [x for x in facility_shaking if group in x.facility.groups]
+    
     add_pdf_table(pdf, configs['table']['table_head'],
                   facility_shaking)
     # NRS - Add disclosure
@@ -185,9 +187,13 @@ def add_summary_to_pdf(pdf, shakemap, group):
     pdf.set_font(font, style, size)
 
 
-def add_pdf_table(pdf, headers, data):
+def add_pdf_table(pdf, headers, data): 
+    font = pdf.font_family
+    style = pdf.font_style
+    size = pdf.font_size_pt
+    
     pdf.set_font(font, 'b', 18)
-    pdf.multi_cell(0, pdf.font_size, 'Inspection List')
+    pdf.multi_cell(0, 18, 'Inspection List')
     pdf.set_font(font, '', 10)
     pdf.ln(pdf.font_size)
     
