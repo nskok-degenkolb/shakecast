@@ -115,11 +115,11 @@ def add_header_to_pdf(pdf, shakemap, configs):
     primary_contact = configs.get('pContact', 'Introduction')
     secondary_contact = configs.get('sContact', 'Introduction')
     
-    pdf.set_font(font, style, 12)
-    pdf.multi_cell(0, 12, myIntroduction)
+    pdf.set_font(font, '', 12)
+    pdf.multi_cell(0, 14, myIntroduction)
     pdf.ln(10)
-    pdf.multi_cell(0, 12, primary_contact)
-    pdf.multi_cell(0, 12, secondary_contact)
+    pdf.multi_cell(0, 14, primary_contact)
+    pdf.multi_cell(0, 14, secondary_contact)
     pdf.ln(10)
     
     pdf.set_font(font, style, size)
@@ -268,15 +268,29 @@ def add_pdf_table(pdf, headers, data):
 
 
 def add_shakemap_to_pdf(pdf, shakemap):
+    font = pdf.font_family
+    style = pdf.font_style
+    size = pdf.font_size_pt
+    
     shakemap_image_loc = os.path.join(shakemap.directory_name, 'intensity.jpg')
-
+    shakemap_legend_loc = 'https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/Mercalli%20Intensity%20Scale_0.png'
     width = pdf.w * 0.50
     top = pdf.get_y() + 10
     left = (pdf.w - width) / 2
 
     pdf.image(shakemap_image_loc, x=left, y=top, w=width)
 
-
+    pdf.add_page()
+    pdf.set_font(font, 'b', 14)
+    pdf.multi_cell(pdf.w, pdf.font_size, 'USGS Shakemap Legend')
+    top = pdf.get_y() + 10
+    try: 
+        pdf.image(shakemap_legend_loc,x=left, y=top, w=width)
+    except:
+        pass
+    
+    pdf.set_font(font, '', size)
+    
 def add_line_to_pdf(line, headers, pdf, padding=0):
     page_width = pdf.w - 2 * pdf.l_margin
     max_cell_height = get_line_height(line)
