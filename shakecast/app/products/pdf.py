@@ -116,10 +116,10 @@ def add_header_to_pdf(pdf, shakemap, configs):
     secondary_contact = configs.get('sContact', 'Introduction')
     
     pdf.set_font(font, '', 12)
-    pdf.multi_cell(0, 14, myIntroduction)
+    pdf.multi_cell(0, pdf.font_size + 2, myIntroduction)
     pdf.ln(10)
-    pdf.multi_cell(0, 14, primary_contact)
-    pdf.multi_cell(0, 14, secondary_contact)
+    pdf.multi_cell(0, pdf.font_size + 2, primary_contact)
+    pdf.multi_cell(0, pdf.font_size + 2, secondary_contact)
     pdf.ln(10)
     
     pdf.set_font(font, style, size)
@@ -209,10 +209,10 @@ def add_pdf_table(pdf, headers, data):
     
     pdf.set_font(font, 'b', 18)
     pdf.multi_cell(0, 18, 'Inspection List')
-    pdf.set_font(font, '', 10)
+    pdf.set_font(font, style, size)
     pdf.ln(pdf.font_size)
 
-    text1 = 'The following list ranks the ministry inspection priorities based on the estimated shaking at the building site and the structure type of the building. The table contains the following metrics.'
+    #text1 = 'The following list ranks the ministry inspection priorities based on the estimated shaking at the building site and the structure type of the building. The table contains the following metrics.'
     #text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
     #text3 = 'MMI – Modified Mercalli Intensity discussed on the previous page. This metric is considered by HAZUS in determining the inspection priority when structural system information is not well defined. '
     #text4 = 'Peak Ground Velocity (PGV), cm/s – maximum velocity of the ground at the building site'
@@ -221,7 +221,7 @@ def add_pdf_table(pdf, headers, data):
     #text7 = 'Dist., km – Site distance from the epicenter'
     #text8 = 'Shaking Value – Value of the metric considered by the HAZUS analysis. MMI or PGA (cm/s/s)'
     
-    pdf.multi_cell(0, 12, text1)
+    #pdf.multi_cell(0, 12, text1)
     #pdf.multi_cell(0, 12, text2)
     #pdf.multi_cell(0, 12, text3)
     #pdf.multi_cell(0, 12, text4)
