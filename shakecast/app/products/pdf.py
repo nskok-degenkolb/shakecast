@@ -59,9 +59,12 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     facility_shaking = sorted(
         shakemap.facility_shaking, key=lambda x: x.weight, reverse=True)
     facility_shaking = [x for x in facility_shaking if group in x.facility.groups]
-    
-    add_pdf_table(pdf, configs['table']['table_head'],
-                  facility_shaking)
+
+    try:
+        add_pdf_table(pdf, configs['table']['table_head'], facility_shaking)
+    except:
+        pass
+        
     # NRS - Add disclosure
     try:
         font = pdf.font_family
@@ -200,27 +203,24 @@ def add_pdf_table(pdf, headers, data):
     pdf.set_font(font, '', 10)
     pdf.ln(pdf.font_size)
 
-    try:
-        text1 = 'The following list ranks the ministry inspection priorities based on the estimated shaking at the building site and the structure type of the building. The table contains the following metrics.'
-        text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
-        text3 = 'MMI – Modified Mercalli Intensity discussed on the previous page. This metric is considered by HAZUS in determining the inspection priority when structural system information is not well defined. '
-        text4 = 'Peak Ground Velocity (PGV), cm/s – maximum velocity of the ground at the building site'
-        text5 = 'PSA03, \% g  – Spectral acceleration response at 0.3s which is of interest to Degenkolb Engineers'
-        text6 = 'Metric – Value that HAZUS is considering in when estimating inspection priority.  MMI is considered where the structural system information is not well defined. Peak Ground Acceleration is considered where the structural system is defined. '
-        text7 = 'Dist., km – Site distance from the epicenter'
-        text8 = 'Shaking Value – Value of the metric considered by the HAZUS analysis. MMI or PGA (cm/s/s)'
-        
-        pdf.multi_cell(0, 10, text1)
-        pdf.multi_cell(0, 10, text2)
-        pdf.multi_cell(0, 10, text3)
-        pdf.multi_cell(0, 10, text4)
-        pdf.multi_cell(0, 10, text5)
-        pdf.multi_cell(0, 10, text6)
-        pdf.multi_cell(0, 10, text7)
-        pdf.multi_cell(0, 10, text8)
-        pdf.ln(pdf.font_size)
-    except:
-        pass
+    text1 = 'The following list ranks the ministry inspection priorities based on the estimated shaking at the building site and the structure type of the building. The table contains the following metrics.'
+    #text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
+    #text3 = 'MMI – Modified Mercalli Intensity discussed on the previous page. This metric is considered by HAZUS in determining the inspection priority when structural system information is not well defined. '
+    #text4 = 'Peak Ground Velocity (PGV), cm/s – maximum velocity of the ground at the building site'
+    #text5 = 'PSA03, \% g  – Spectral acceleration response at 0.3s which is of interest to Degenkolb Engineers'
+    #text6 = 'Metric – Value that HAZUS is considering in when estimating inspection priority.  MMI is considered where the structural system information is not well defined. Peak Ground Acceleration is considered where the structural system is defined. '
+    #text7 = 'Dist., km – Site distance from the epicenter'
+    #text8 = 'Shaking Value – Value of the metric considered by the HAZUS analysis. MMI or PGA (cm/s/s)'
+    
+    pdf.multi_cell(0, 10, text1)
+    #pdf.multi_cell(0, 10, text2)
+    #pdf.multi_cell(0, 10, text3)
+    #pdf.multi_cell(0, 10, text4)
+    #pdf.multi_cell(0, 10, text5)
+    #pdf.multi_cell(0, 10, text6)
+    #pdf.multi_cell(0, 10, text7)
+    #pdf.multi_cell(0, 10, text8)
+    #pdf.ln(pdf.font_size)
     
     use_headers = [header for header in headers if header['use']]
 
