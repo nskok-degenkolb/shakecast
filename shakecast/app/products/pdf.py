@@ -106,9 +106,6 @@ def add_header_to_pdf(pdf, shakemap, configs):
     pdf.set_font(font, 'b', 24)
     pdf.multi_cell(pdf.w, pdf.font_size + 5, title)
 
-    pdf.set_font(font, 'b', 14)
-    pdf.multi_cell(pdf.w, pdf.font_size, shakemap.event.title)
-
     #add introduction NRS
     pdf.ln(10)
     myIntroduction = configs.get('introduction', 'Introduction')
@@ -187,6 +184,8 @@ def add_summary_to_pdf(pdf, shakemap, group):
     details_height = pdf.font_size + 2
     font = pdf.font_family
     pdf.set_font(font, 'b', 14)
+    pdf.multi_cell(pdf.w, pdf.font_size, 'Event: {0}'.format(shakemap.event.title))
+    
     pdf.multi_cell(pdf.w, details_height, 'Summary of Potential Inspections')
     pdf.set_font(font, '', 12)
     pdf.multi_cell(pdf.w, details_height,
