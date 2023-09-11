@@ -213,7 +213,7 @@ def add_pdf_table(pdf, headers, data):
     pdf.ln(pdf.font_size)
 
     text1 = 'The following list ranks the ministry inspection priorities based on the estimated shaking at the building site and the structure type of the building. The table contains the following metrics.'
-    text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
+    #text2 = 'Inspection Priority – Likelihood of damage computed by HAZUS analysis considering the ground shaking metrics at the building site.'
     #text3 = 'MMI – Modified Mercalli Intensity discussed on the previous page. This metric is considered by HAZUS in determining the inspection priority when structural system information is not well defined. '
     #text4 = 'Peak Ground Velocity (PGV), cm/s – maximum velocity of the ground at the building site'
     #text5 = 'PSA03, % g  – Spectral acceleration response at 0.3s which is of interest to Degenkolb Engineers'
@@ -222,14 +222,14 @@ def add_pdf_table(pdf, headers, data):
     #text8 = 'Shaking Value – Value of the metric considered by the HAZUS analysis. MMI or PGA (cm/s/s)'
     
     pdf.multi_cell(0, 12, text1)
-    pdf.multi_cell(0, 12, text2)
+    #pdf.multi_cell(0, 12, text2)
     #pdf.multi_cell(0, 12, text3)
     #pdf.multi_cell(0, 12, text4)
     #pdf.multi_cell(0, 12, text5)
     #pdf.multi_cell(0, 12, text6)
     #pdf.multi_cell(0, 12, text7)
     #pdf.multi_cell(0, 12, text8)
-    pdf.ln(pdf.font_size)
+    pdf.ln(10)
     
     use_headers = [header for header in headers if header['use']]
 
@@ -273,7 +273,7 @@ def add_shakemap_to_pdf(pdf, shakemap):
     size = pdf.font_size_pt
     
     shakemap_image_loc = os.path.join(shakemap.directory_name, 'intensity.jpg')
-    shakemap_legend_loc = 'https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/Mercalli%20Intensity%20Scale_0.png'
+    #shakemap_legend_loc = 'https://d9-wret.s3.us-west-2.amazonaws.com/assets/palladium/production/s3fs-public/thumbnails/image/Mercalli%20Intensity%20Scale_0.png'
     width = pdf.w * 0.50
     top = pdf.get_y() + 10
     left = (pdf.w - width) / 2
