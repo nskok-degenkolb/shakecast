@@ -56,6 +56,8 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
     add_shakemap_to_pdf(pdf, shakemap)
 
     pdf.add_page()
+    pdf.set_font(pdf.font_family, '', 10)
+    
     facility_shaking = sorted(
         shakemap.facility_shaking, key=lambda x: x.weight, reverse=True)
     facility_shaking = [x for x in facility_shaking if group in x.facility.groups]
