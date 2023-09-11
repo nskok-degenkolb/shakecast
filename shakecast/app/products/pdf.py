@@ -223,12 +223,12 @@ def add_pdf_table(pdf, headers, data):
     
     pdf.multi_cell(0, 12, text1)
     pdf.multi_cell(0, 12, text2)
-    pdf.multi_cell(0, 12, text3)
-    pdf.multi_cell(0, 12, text4)
-    pdf.multi_cell(0, 12, text5)
-    pdf.multi_cell(0, 12, text6)
-    pdf.multi_cell(0, 12, text7)
-    pdf.multi_cell(0, 12, text8)
+    #pdf.multi_cell(0, 12, text3)
+    #pdf.multi_cell(0, 12, text4)
+    #pdf.multi_cell(0, 12, text5)
+    #pdf.multi_cell(0, 12, text6)
+    #pdf.multi_cell(0, 12, text7)
+    #pdf.multi_cell(0, 12, text8)
     pdf.ln(pdf.font_size)
     
     use_headers = [header for header in headers if header['use']]
@@ -280,14 +280,14 @@ def add_shakemap_to_pdf(pdf, shakemap):
 
     pdf.image(shakemap_image_loc, x=left, y=top, w=width)
 
-    pdf.add_page()
-    pdf.set_font(font, 'b', 14)
-    pdf.multi_cell(pdf.w, pdf.font_size, 'USGS Shakemap Legend')
-    top = pdf.get_y() + 10
-    try: 
-        pdf.image(shakemap_legend_loc,x=left, y=top, w=width)
-    except:
-        pass
+    #pdf.add_page()
+    #pdf.set_font(font, 'b', 14)
+    #pdf.multi_cell(pdf.w, pdf.font_size, 'USGS Shakemap Legend')
+    #top = pdf.get_y() + 10
+    #try: 
+        #pdf.image(shakemap_legend_loc,x=left, y=top, w=width)
+    #except:
+    #    pass
     
     pdf.set_font(font, '', size)
     
