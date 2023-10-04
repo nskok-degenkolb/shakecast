@@ -87,7 +87,7 @@ def new_event_notification(notifications=None,
             map_image.close()
             
             msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
-            msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
+            # NRS remove - msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
             msg.attach(msg_gmap)
 
     # find the ShakeCast logo
