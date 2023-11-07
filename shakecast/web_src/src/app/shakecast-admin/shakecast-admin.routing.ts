@@ -55,7 +55,7 @@ const appRoutes: Routes = [
 export const shakecastAdminRoutes: Routes = [
     {
         path: 'shakecast-admin',
-        loadChildren: 'app/shakecast-admin/shakecast-admin.module#ShakeCastAdminModule'
+        loadChildren: () => import('app/shakecast-admin/shakecast-admin.module').then(m => m.ShakeCastAdminModule)
     }
 ]
 

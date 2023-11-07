@@ -38,7 +38,7 @@ export const shakecastRoutes: Routes = [
     },
     {
         path: 'shakecast',
-        loadChildren: 'app/shakecast/shakecast.module#ShakeCastModule'
+        loadChildren: () => import('app/shakecast/shakecast.module').then(m => m.ShakeCastModule)
     }
 ]
 

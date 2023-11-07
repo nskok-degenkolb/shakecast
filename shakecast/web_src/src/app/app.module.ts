@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { JsonpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
 
 import { SimpleNotificationsModule } from 'angular2-notifications';
 
@@ -25,7 +24,7 @@ import { CoreModule } from '@core/core.module';
     SimpleNotificationsModule.forRoot(),
     routing,
     HttpClientModule,
-    JsonpModule,
+    HttpClientJsonpModule,
     LoginModule,
     SharedModule
   ],
