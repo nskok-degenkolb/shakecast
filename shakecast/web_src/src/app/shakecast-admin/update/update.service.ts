@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
-import { Response } from '@angular/http';
 import { HttpClient } from '@angular/common/http';
 import { NotificationsService } from 'angular2-notifications';
 import { map } from 'rxjs/operators';

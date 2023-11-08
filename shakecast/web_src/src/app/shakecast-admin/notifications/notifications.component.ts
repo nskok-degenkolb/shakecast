@@ -37,7 +37,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
     private notService: NotificationsService
   ) {}
 
-  @ViewChild('notificationContainer') notContainer: ElementRef;
+  @ViewChild('notificationContainer', {static: false}) notContainer: ElementRef;
 
   ngOnInit() {
     this.titleService.title.next('Notifications');

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Response, Headers, RequestOptions } from '@angular/http';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { 
+    HttpClient, 
+    HttpParams, 
+    HttpResponse, 
+    HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
 import { BehaviorSubject } from 'rxjs';
