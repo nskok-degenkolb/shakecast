@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[6],{"87p8":function(n,o,t){"use strict";t.r(o),t.d(o,"ShakeCastModule",(function(){return i}));var r=t("ofXK"),e=t("3Pt+"),a=t("OadK"),c=t("PCNd"),s=t("fXoL");let i=(()=>{class n{}return n.\u0275mod=s.Ib({type:n}),n.\u0275inj=s.Hb({factory:function(o){return new(o||n)},providers:[],imports:[[e.c,r.c,a.a,c.a]]}),n})()}}]);
