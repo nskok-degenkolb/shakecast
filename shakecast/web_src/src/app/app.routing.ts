@@ -22,4 +22,4 @@ export const appRoutingProviders: any[] = [
     AdminGuard
 ];
 
-export const routing: ModuleWithProviders<RouterModule> = RouterModule.forRoot(appRoutes, { relativeLinkResolution: 'legacy' });
+export const routing: ModuleWithProviders<RouterModule> = RouterModule.forRoot(appRoutes, {});
