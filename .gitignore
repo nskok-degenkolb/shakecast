@@ -69,6 +69,7 @@ testem.log
 /typings
 .coverage
 htmlcov/
+.angular
 
 
 # e2e
