@@ -7,7 +7,7 @@
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build --configuration production",
     "test": "ng test",
-    "lint": "ng lint",
+    "lint": "eslint --fix",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -34,13 +34,20 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0",
+    "@angular-eslint/builder": "17.1.0",
+    "@angular-eslint/eslint-plugin": "17.1.0",
+    "@angular-eslint/eslint-plugin-template": "17.1.0",
+    "@angular-eslint/schematics": "17.1.0",
+    "@angular-eslint/template-parser": "17.1.0",
     "@angular/cli": "17.0.0",
     "@angular/compiler-cli": "17.0.3",
     "@angular/language-service": "17.0.3",
     "@types/jasmine": "~5.1.2",
     "@types/jasminewd2": "~2.0.10",
     "@types/node": "^20.9.0",
-    "codelyzer": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "6.11.0",
+    "@typescript-eslint/parser": "6.11.0",
+    "eslint": "^8.53.0",
     "jasmine-core": "~5.1.1",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "~6.4.2",
@@ -50,7 +57,6 @@
     "karma-jasmine-html-reporter": "^2.1.0",
     "protractor": "~7.0.0",
     "ts-node": "~10.9.1",
-    "tslint": "~6.1.0",
     "typescript": "5.2.2"
   }
 }
