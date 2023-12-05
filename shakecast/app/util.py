@@ -5,7 +5,7 @@ import datetime
 import time
 from shutil import copyfile
 import shutil
-from collections import Mapping
+from collections.abc import Mapping
 
 class SC(object):
     """
