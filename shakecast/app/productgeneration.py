@@ -132,7 +132,8 @@ def get_products(group, shakemap, session=None):
                 shakemap=shakemap,
                 product_type=product_type
             )
-
+            session.add(product)
+            
             product.name = (product_type.file_name or
                     '{}_impact.{}'.format(group.name, product_type.type))
         
