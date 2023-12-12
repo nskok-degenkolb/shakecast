@@ -374,8 +374,6 @@ class ProductGrabber(object):
                     product.error = '{}: {}'.format(type(e), e)
                     self.log += 'Failed to download: %s %s' % (
                         eq_id, product_name)
-                finally:
-                    session.add(product)
 
             if (scenario is False and
                     shakemap.has_products(self.req_products) and
