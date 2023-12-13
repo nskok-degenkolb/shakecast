@@ -5,7 +5,7 @@ import datetime
 import time
 from shutil import copyfile
 import shutil
-from collections import Mapping
+from collections.abc import Mapping
 
 class SC(object):
     """
@@ -304,12 +304,12 @@ class Clock(object):
         
     def get_time(self):
         sc = SC()
-        self.utc_time = datetime.datetime.utcfromtimestamp(time.time())
+        self.utc_time = datetime.datetime.fromtimestamp(time.time(), datetime.timezone.utc)
         self.app_time = self.utc_time + datetime.timedelta(hours=sc.timezone)
         
     def from_time(self, time):
         sc = SC()
-        utc_time = datetime.datetime.utcfromtimestamp(time)
+        utc_time = datetime.datetime.fromtimestamp(time, datetime.timezone.utc)
         app_time = utc_time + datetime.timedelta(hours=sc.timezone)
         
         return app_time

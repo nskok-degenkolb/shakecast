@@ -52,7 +52,7 @@ app = Flask(__name__,
 
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
-app.json_encoder = AlchemyEncoder
+app.json_provider_class = AlchemyEncoder
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'index'
