@@ -113,12 +113,14 @@ def add_header_to_pdf(pdf, shakemap, configs):
     myIntroduction = configs.get('introduction', 'Introduction')
     primary_contact = configs.get('pContact', 'Introduction')
     secondary_contact = configs.get('sContact', 'Introduction')
-    
+    third_contact = configs.get('tContact', 'Introduction')
+
     pdf.set_font(font, '', 12)
     pdf.multi_cell(0, pdf.font_size + 2, myIntroduction)
     pdf.ln(10)
     pdf.multi_cell(0, pdf.font_size + 2, primary_contact)
     pdf.multi_cell(0, pdf.font_size + 2, secondary_contact)
+    pdf.multi_cell(0, pdf.font_size + 2, third_contact)
     pdf.ln(10)
     
     pdf.set_font(font, style, size)

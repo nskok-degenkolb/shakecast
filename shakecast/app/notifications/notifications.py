@@ -259,7 +259,7 @@ def inspection_notification(notification=None,
                         myProductName = (product.name).replace('_impact.pdf','')
                     myShakemapID = '{0}-{1}'.format(shakemap.shakemap_id,shakemap.shakemap_version)
                     attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
-                    attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Inspection_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
+                    attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Assessment_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
                     msg.attach(attach_product)
                     print('Attached: {}'.format(product.product_type.name))
                 except Exception as e:
@@ -288,9 +288,9 @@ def inspection_notification(notification=None,
                     group_str = group_str.replace('_scenario','')
                 
                 if group_str.find('providence') > -1 :
-                    subject = '{0} {1} {2}'.format(group_str.capitalize(),' - Post-EQ Potential Inspection List - ', event_str)
+                    subject = '{0} {1} {2}'.format(group_str.capitalize(),' - Post-EQ Potential Assessment List - ', event_str)
                 else:
-                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Inspection - Group:', group_str.upper(),' ', event_str)
+                    subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Assessment - Group:', group_str.upper(),' ', event_str)
                 #subject = f'Inspection -  {shakemap.event.title}'
 
                 if scenario is True:
@@ -336,6 +336,7 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
 
     #NRS - do not send an inspection if alert_level is gray or None. A group is determined to be affected by an event if it is present within shakemap boundaries. The original code would send a new inspection notification regardless of alert_level. 
     if (alert_level is None) or (alert_level == 'gray'):
+    #if (alert_level is None):
         new_inspection = False
         update = False
     else:
@@ -359,15 +360,15 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
 
         # ignore changes if they don't merit inspection (grey and None)
         # Start NRS - add third condition if previous alert is third condition if previous alert is none and new is gray then do not send a notification.
-        if (((prev_alert_level is None) and 
-                (alert_level is None)) or
-                ((prev_alert_level == 'gray') and
-                (alert_level == 'gray')) or 
-                ((prev_alert_level is None) and
-                (alert_level == 'gray'))):
+        if (((prev_alert_level is None) and (alert_level is None)) or
+                ((prev_alert_level == 'gray') and (alert_level == 'gray')) or 
+                ((prev_alert_level is None) and (alert_level == 'gray'))):
             new_inspection = False
         # End NRS
-        
+#        if ((prev_alert_level is None) and (alert_level is None)):
+#            new_inspection = False
+        # End NRS
+
         # if overall inspection level changes, send notification
         elif prev_alert_level != alert_level:
             new_inspection = True
