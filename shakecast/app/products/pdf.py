@@ -307,7 +307,7 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
         cell_width = page_width * float(cell['width'])
 
         #NRS remember the maximum cell height if facility name spans multiple rows
-        cell_height = get_cell_height(cell)
+        cell_height = max_cell_height
         
         
         cell.update(headers[header_pos])
