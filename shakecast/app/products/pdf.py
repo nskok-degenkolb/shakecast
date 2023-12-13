@@ -392,7 +392,8 @@ def get_line_height(line):
     max_height = 0
     for cell in line:
         height = get_cell_height(cell)
-        max_height = height if height > max_height else max_height
+        if height > max_height
+            max_height = height 
     return max_height
 
 
