@@ -323,9 +323,9 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
             value = cell['translate'][cell['value']]
         else:
             value = cell['value']
-        #NRS mutli_cell height is the height of each line of text and not overall cell height.
-        if cell_height > pdf.font_size:
+        #NRS mutli_cell height is the height of each line of text and not overall cell height..
             lines = cell_height / pdf.font_size
+        if lines >= 2:
             pdf.multi_cell(cell_width, pdf.font_size + (padding / lines), str(value), border=1, align='L', fill=1)
         else:
             pdf.multi_cell(cell_width, max_cell_height + padding, str(value), border=1, align='L', fill=1)
