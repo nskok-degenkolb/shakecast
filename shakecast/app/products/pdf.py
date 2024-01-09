@@ -306,9 +306,7 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
         start_x = pdf.get_x()
 
         cell_width = page_width * float(cell['width'])
-
-        #NRS remember the maximum cell height if facility name spans multiple rows
-        cell_height = max_cell_height
+        cell_height = get_cell_height(cell)
         
         
         cell.update(headers[header_pos])
@@ -325,12 +323,12 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
             value = cell['translate'][cell['value']]
         else:
             value = cell['value']
-        #NRS remove fontsize + padding / lines for if condition; change justification
+        #NRS mutli_cell height is the height of each line of text and not overall cell height.
         if cell_height > pdf.font_size:
-            #lines = cell_height / pdf.font_size
-            pdf.multi_cell(cell_width, cell_height + padding, str(value), border=1, align='L', fill=1)
+            lines = cell_height / pdf.font_size
+            pdf.multi_cell(cell_width, pdf.font_size + (padding / lines), str(value), border=1, align='L', fill=1)
         else:
-            pdf.multi_cell(cell_width, cell_height + padding, str(value), border=1, align='L', fill=1)
+            pdf.multi_cell(cell_width, max_cell_height + padding, str(value), border=1, align='L', fill=1)
         
         #if (pdf.get_y() - start_y) > maxCellHeightLine:
         #    maxCellHeightLine = (pdf.get_y() - start_y)
