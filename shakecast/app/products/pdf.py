@@ -325,14 +325,12 @@ def add_line_to_pdf(line, headers, pdf, padding=0):
             value = cell['translate'][cell['value']]
         else:
             value = cell['value']
-
+        #NRS remove fontsize + padding / lines for if condition; change justification
         if cell_height > pdf.font_size:
-            lines = cell_height / pdf.font_size
-            pdf.multi_cell(cell_width, pdf.font_size +
-                           (padding / lines), str(value), border=1, fill=1)
+            #lines = cell_height / pdf.font_size
+            pdf.multi_cell(cell_width, cell_height + padding, str(value), border=1, align='L', fill=1)
         else:
-            pdf.multi_cell(cell_width, max_cell_height +
-                           padding, str(value), border=1, fill=1)
+            pdf.multi_cell(cell_width, cell_height + padding, str(value), border=1, align='L', fill=1)
         
         #if (pdf.get_y() - start_y) > maxCellHeightLine:
         #    maxCellHeightLine = (pdf.get_y() - start_y)
