@@ -79,7 +79,7 @@ def generate_impact_pdf(group, shakemap, save=False, pdf_name='', template_name=
         pdf.set_font(font, '', 10)
         pdf.ln(pdf.font_size)
         
-        #myDisclaimer = 'This automated report is confidential and intended soley for Providence. If received in error, please notify the sender and the report from your system. The results provided herein are computer-generated building damage estimates and may not accurately represent the actual conditions or extent of damage. They are not a subsitute for a structural evaluation by a professional engineer. Degenkolb Engineers disclaims any liability for errors or omissions and makes no warranties, express or implied, regarding accuracy or completeness. Unauthorized use, disclosure, or copying is prohibited. '
+        #myDisclaimer = 'This automated report is confidential and intended soley for Degenkolb. If received in error, please notify the sender and the report from your system. The results provided herein are computer-generated building damage estimates and may not accurately represent the actual conditions or extent of damage. They are not a subsitute for a structural evaluation by a professional engineer. Degenkolb Engineers disclaims any liability for errors or omissions and makes no warranties, express or implied, regarding accuracy or completeness. Unauthorized use, disclosure, or copying is prohibited. '
         
         pdf.multi_cell(0, pdf.font_size, configs['disclaimer'].get('disclaimer_text','Disclaimer'))
         pdf.set_font(font, style, size)
@@ -191,7 +191,7 @@ def add_summary_to_pdf(pdf, shakemap, group):
     pdf.set_font(font, 'b', 14)
     pdf.multi_cell(pdf.w, pdf.font_size, 'Event: {0}'.format(shakemap.event.title))
     
-    pdf.multi_cell(pdf.w, details_height, 'Summary of Potential Inspections')
+    pdf.multi_cell(pdf.w, details_height, 'Summary of Potential Visual Assessments')
     pdf.set_font(font, '', 12)
     pdf.multi_cell(pdf.w, details_height,
                    'Total Facilities Evaluated: {}'.format(impact['all']))
