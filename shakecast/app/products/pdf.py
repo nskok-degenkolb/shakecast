@@ -195,12 +195,12 @@ def add_summary_to_pdf(pdf, shakemap, group):
     pdf.set_font(font, '', 12)
     pdf.multi_cell(pdf.w, details_height,
                    'Total Facilities Evaluated: {}'.format(impact['all']))
-    pdf.multi_cell(pdf.w, details_height, 'High inspection priority: {}'.format(impact['red']))
+    pdf.multi_cell(pdf.w, details_height, 'High visual assessment priority: {}'.format(impact['red']))
     pdf.multi_cell(pdf.w, details_height,
-                   'Medium-High inspection priority: {}'.format(impact['orange']))
+                   'Medium-High visual assessment priority: {}'.format(impact['orange']))
     pdf.multi_cell(pdf.w, details_height,
-                   'Medium: {}'.format(impact['yellow']))
-    pdf.multi_cell(pdf.w, details_height, 'Low inspection priority: {}'.format(impact['green']))
+                   'Medium visual assessment priority: {}'.format(impact['yellow']))
+    pdf.multi_cell(pdf.w, details_height, 'Low visual assessment priority: {}'.format(impact['green']))
     pdf.multi_cell(pdf.w, details_height, 'None: {}'.format(impact['gray']))
 
    
