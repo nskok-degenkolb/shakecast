@@ -91,35 +91,35 @@ def new_event_notification(notifications=None,
             msg.attach(msg_gmap)
     
     # do not attach header or logo if plain message (MMS)
-    if message_type == 'plain':
-        #do not add logo
-    else:
-        # find the ShakeCast logo
-        temp_manager = TemplateManager()
-        configs = temp_manager.get_configs('new_event', 
-                                            name=notification.group.template)
-        logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
-
-                               
-        # open logo and attach it to the message
-        logo_file = get_image(logo_str)
-        msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
-        logo_file.close()
-        msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
-        #msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
-        msg.attach(msg_image)
+    #if message_type == 'plain':
+    #do not add logo
+    #else:
+    # find the ShakeCast logo
+    temp_manager = TemplateManager()
+    configs = temp_manager.get_configs('new_event', 
+                                        name=notification.group.template)
+    logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
     
-        # attach a header if it's needed
-        if configs.get('header'):
-            header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
-            if os.path.isfile(header_str):
-                header_file = get_image(header_str)
-                msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
-                header_file.close()
-                msg_image.add_header('Content-ID', 'header')
-                msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
-                msg.attach(msg_image)
-        #end plain message formating
+                           
+    # open logo and attach it to the message
+    logo_file = get_image(logo_str)
+    msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
+    logo_file.close()
+    msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
+    #msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+    msg.attach(msg_image)
+    
+    # attach a header if it's needed
+    if configs.get('header'):
+        header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
+        if os.path.isfile(header_str):
+            header_file = get_image(header_str)
+            msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
+            header_file.close()
+            msg_image.add_header('Content-ID', 'header')
+            msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
+            msg.attach(msg_image)
+    #end plain message formating
                                
     mailer = Mailer()
     me = mailer.me
