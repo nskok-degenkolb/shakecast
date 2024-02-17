@@ -93,6 +93,7 @@ def new_event_notification(notifications=None,
     # do not attach header or logo if plain message (MMS)
     if message_type == 'plain':
         # do not add logo
+        pass
     else:
         # find the ShakeCast logo
         temp_manager = TemplateManager()
