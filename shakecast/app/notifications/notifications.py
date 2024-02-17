@@ -228,25 +228,30 @@ def inspection_notification(notification=None,
             configs = temp_manager.get_configs('inspection',
                                         name=notification.group.template)
             logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
-            
-            # open logo and attach it to the message
-            logo_file = open(logo_str, 'rb')
-            msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
-            logo_file.close()
-            msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-            # NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
-            msg.attach(msg_image)
-            
-            # attach a header if it's needed
-            if configs.get('header'):
-                header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
-                if os.path.isfile(header_str):
-                    header_file = get_image(header_str)
-                    msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
-                    header_file.close()
-                    msg_image.add_header('Content-ID', 'header')
-                    msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
-                    msg.attach(msg_image)
+
+            # do not attach header or logo if plain message (MMS)
+            if message_type == 'plain':
+                # do not add logo
+                pass
+            else:
+                # open logo and attach it to the message
+                logo_file = open(logo_str, 'rb')
+                msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
+                logo_file.close()
+                msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
+                # NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+                msg.attach(msg_image)
+                
+                # attach a header if it's needed
+                if configs.get('header'):
+                    header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
+                    if os.path.isfile(header_str):
+                        header_file = get_image(header_str)
+                        msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
+                        header_file.close()
+                        msg_image.add_header('Content-ID', 'header')
+                        msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
+                        msg.attach(msg_image)
             
             # check for and attach local products
             for product in shakemap.local_products:
