@@ -206,12 +206,21 @@ def inspection_notification(notification=None,
         try:
             #initiate message
             msg = MIMEMultipart('related')
-
+                      
+            #NRS condition to handle update cases
+            if update:
+                config_template_type = 'update'
+            else:
+                config_template_type = 'inspection'
+            #end NRS 
+            
             # build the notification
             print('Generating html...')
             not_builder = NotificationBuilder()
-            message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template)
-            print('Done.')
+            message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template, config_template_type)
+            print('html Done.') 
+            
+            
             # attach html
             message_type = 'html' if '<html>' in message else 'plain'
             mime_message = MIMEText(message, message_type)
@@ -225,7 +234,9 @@ def inspection_notification(notification=None,
             
             # find the ShakeCast logo
             temp_manager = TemplateManager()
-            configs = temp_manager.get_configs('inspection',
+            
+            
+            configs = temp_manager.get_configs(config_template_type,
                                         name=notification.group.template)
             logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
 

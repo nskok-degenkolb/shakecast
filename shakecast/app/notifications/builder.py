@@ -29,14 +29,18 @@ class NotificationBuilder(object):
                                web=web)
     
     @staticmethod
-    def build_insp_html(shakemap, notification=None, name=None, web=False, config=None):
+    def build_insp_html(shakemap, notification=None, name=None, web=False, config=None, config_template_type=None):
         temp_manager = TemplateManager()
         template_name = (name or 'default').lower()
-        if not config:
-            config = temp_manager.get_configs('inspection', name=template_name)
         
-        template = temp_manager.get_template('inspection', name=template_name)
-
+        #start NRS - change static template type to either 'inspection' or 'update'
+        if not config:
+            config = temp_manager.get_configs(config_template_type, name=template_name)
+        
+        template = temp_manager.get_template(config_template_type, name=template_name)
+        
+        # end NRS addition for update
+        
         if config.get('table'):
           shakemap.sort_facility_shaking(config['table'].get('sort', 'weight'))
         else:
