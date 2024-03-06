@@ -217,7 +217,7 @@ def inspection_notification(notification=None,
             # build the notification
             print('Generating html...')
             not_builder = NotificationBuilder()
-            message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template, config_template_type)
+            message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template, config_template_type=config_template_type)
             print('html Done.') 
             
             
