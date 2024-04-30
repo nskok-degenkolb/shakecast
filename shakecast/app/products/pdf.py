@@ -115,6 +115,8 @@ def add_header_to_pdf(pdf, shakemap, configs):
     primary_contact = configs.get('pContact', 'Introduction')
     secondary_contact = configs.get('sContact', 'Introduction')
     third_contact = configs.get('tContact', 'Introduction')
+    section_title = configs.get('tableNoteTitle', 'Introduction')
+    section_content = configs.get('tableNoteContent', 'Introduction')
 
     pdf.set_font(font, '', 12)
     pdf.multi_cell(0, pdf.font_size + 2, myIntroduction)
@@ -122,6 +124,13 @@ def add_header_to_pdf(pdf, shakemap, configs):
     pdf.multi_cell(0, pdf.font_size + 2, primary_contact)
     pdf.multi_cell(0, pdf.font_size + 2, secondary_contact)
     pdf.multi_cell(0, pdf.font_size + 2, third_contact)
+    pdf.ln(10)
+
+    #NRS additional report content
+    pdf.set_font(font, 'b', 14)
+    pdf.multi_cell(pdf.w, pdf.font_size + 5, section_title)
+    pdf.set_font(font, '', 12)
+    pdf.multi_cell(0, pdf.font_size + 2, section_content)
     pdf.ln(10)
     
     pdf.set_font(font, style, size)
