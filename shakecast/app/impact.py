@@ -272,7 +272,7 @@ def lognorm_opt(med=0, spread=0, shaking=0):
         float: probability of exceedance as a human readable percentage
     '''
 
-    p_norm = (math.erf((shaking-med)/(math.sqrt(2) * spread)) + 1)/2
+    p_norm = (math.erf((math.log(shaking) - math.log(med))/(math.sqrt(2) * spread)) + 1)/2
     return p_norm * 100
 
 def make_inspection_priority(facility=None,
