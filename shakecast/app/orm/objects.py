@@ -1384,7 +1384,7 @@ class LocalProduct(Base):
     __tablename__ = 'local_products'
     id = Column(Integer, primary_key=True)
     # NRS - add sting length to type
-    type = Column(String(255),
+    type = Column(String(100),
                      ForeignKey('local_product_types.name'))
     # NRS - end edit
     shakemap_id = Column(Integer,
