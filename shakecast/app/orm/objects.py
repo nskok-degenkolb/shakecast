@@ -1383,8 +1383,10 @@ class Product(Base):
 class LocalProduct(Base):
     __tablename__ = 'local_products'
     id = Column(Integer, primary_key=True)
-    type = Column(String,
+    # NRS - add sting length to type
+    type = Column(String(255),
                      ForeignKey('local_product_types.name'))
+    # NRS - end edit
     shakemap_id = Column(Integer,
                          ForeignKey('shakemap.shakecast_id'))
     group_id = Column(Integer,
