@@ -282,9 +282,11 @@ class Attribute(Base):
     __tablename__ = 'attributes'
     shakecast_id = Column(Integer, primary_key=True)
     facility_id = Column(Integer, ForeignKey('facility.shakecast_id'))
-    name = Column(String)
-    value = Column(String)
-
+    #NRS - add string length for mariadb
+    name = Column(String(255))
+    value = Column(String(255))
+    #NRS - end edit
+    
     def __repr__(self):
         return '''Attribute(shakecast_id={},
                         facility_id={},
