@@ -951,10 +951,14 @@ class Event(Base):
     lon = Column(Float)
     depth = Column(Float)
     magnitude = Column(Float)
-    title = Column(String(100))
+    # NRS modification 100 -> 255
+    title = Column(String(255))
+    # end NRS
     place = Column(String(255))
-    time = Column(Integer)
-    updated = Column(Integer)
+    #NRS modification Integer -> Float
+    time = Column(Float)
+    updated = Column(Float)
+    # End NRS
     override_directory = Column(String(255))
 
     shakemaps = relationship('ShakeMap',
