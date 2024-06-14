@@ -10,7 +10,8 @@ import shakecast.app.env as env
 def create_db_engine():
     # Create an engine object.
     url = env.DB_CONNECTION_STRING
-    engine = create_engine(url)
+    # NRS - add pool_pre_ping and pool_recycle for connection to mariadb
+    engine = create_engine(url, pool_pre_ping=True, pool_recycle=300)
 
     # Create database if it does not exist.
     if not database_exists(engine.url):
