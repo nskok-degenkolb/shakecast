@@ -30,7 +30,7 @@ class Facility(Base):
     __tablename__ = 'facility'
     shakecast_id = Column(Integer, primary_key=True)
     facility_id = Column(String(1000))
-    facility_type = Column(String(25))
+    facility_type = Column(String(255)) # NRS Increase length from 25 to 255
     component = Column(String(100))
     component_class = Column(String(100))
     name = Column(String(255))
@@ -627,8 +627,8 @@ class User(Base):
 class Group(Base):
     __tablename__ = 'group'
     shakecast_id = Column(Integer, primary_key=True)
-    name = Column(String(25))
-    facility_type = Column(String(25))
+    name = Column(String(255)) # NRS Increase from 25 to 255
+    facility_type = Column(String(255)) # NRS Increase from 25 to 255
     lon_min = Column(Float)
     lon_max = Column(Float)
     lat_min = Column(Float)
