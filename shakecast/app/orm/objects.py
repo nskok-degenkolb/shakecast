@@ -515,8 +515,10 @@ class Notification(Base):
     group_id = Column(Integer, ForeignKey('group.shakecast_id'))
     notification_type = Column(String(25))
     status = Column(String(64))
-    sent_timestamp = Column(Float)
-    generated_timestamp = Column(Float)
+    #NRS Float-> Double
+    sent_timestamp = Column(Double)
+    generated_timestamp = Column(Double)
+    # End NRS
     notification_file = Column(String(255))
     error = Column(String(255))
 
@@ -955,9 +957,9 @@ class Event(Base):
     title = Column(String(255))
     # end NRS
     place = Column(String(255))
-    #NRS modification Integer -> Float
-    time = Column(Float)
-    updated = Column(Float)
+    #NRS modification Integer -> Double
+    time = Column(Double)
+    updated = Column(Double)
     # End NRS
     override_directory = Column(String(255))
 
@@ -1089,9 +1091,11 @@ class ShakeMap(Base):
     lon_max = Column(Float)
     generation_timestamp = Column(String(32))
     recieve_timestamp = Column(String(32))
-    begin_timestamp = Column(Float)
-    end_timestamp = Column(Float)
-    superceded_timestamp = Column(Float)
+    #NRS Float-> Double
+    begin_timestamp = Column(Double)
+    end_timestamp = Column(Double)
+    superceded_timestamp = Column(Double)
+    #End NRS
     override_directory = Column(String(255))
 
     products = relationship('Product',
@@ -1398,8 +1402,10 @@ class LocalProduct(Base):
     name = Column(String(255))
     status = Column(String(255), default='created')
     tries = Column(Integer, default=0)
-    begin_timestamp = Column(Float)
-    finish_timestamp = Column(Float, default=0)
+    #NRS Float -> Double
+    begin_timestamp = Column(Double)
+    finish_timestamp = Column(Double, default=0)
+    # End NRS
     error = Column(String(255))
 
     product_type = relationship('LocalProductType',
