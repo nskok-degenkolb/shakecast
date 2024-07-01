@@ -5,7 +5,7 @@ import sys
 import time
 from functools import wraps
 
-from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, Double, ForeignKey, Table, select
+from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, ForeignKey, Table, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
@@ -516,8 +516,8 @@ class Notification(Base):
     notification_type = Column(String(25))
     status = Column(String(64))
     #NRS Float-> Double
-    sent_timestamp = Column(Double)
-    generated_timestamp = Column(Double)
+    sent_timestamp = Column(Float(precision=2))
+    generated_timestamp = Column(Float(precision=2))
     # End NRS
     notification_file = Column(String(255))
     error = Column(String(255))
@@ -958,8 +958,8 @@ class Event(Base):
     # end NRS
     place = Column(String(255))
     #NRS modification Integer -> Double
-    time = Column(Double)
-    updated = Column(Double)
+    time = Column(Float(precision=2))
+    updated = Column(Float(precision=2))
     # End NRS
     override_directory = Column(String(255))
 
@@ -1092,9 +1092,9 @@ class ShakeMap(Base):
     generation_timestamp = Column(String(32))
     recieve_timestamp = Column(String(32))
     #NRS Float-> Double
-    begin_timestamp = Column(Double)
-    end_timestamp = Column(Double)
-    superceded_timestamp = Column(Double)
+    begin_timestamp = Column(Float(precision=2))
+    end_timestamp = Column(Float(precision=2))
+    superceded_timestamp = Column(Float(precision=2))
     #End NRS
     override_directory = Column(String(255))
 
@@ -1403,7 +1403,7 @@ class LocalProduct(Base):
     status = Column(String(255), default='created')
     tries = Column(Integer, default=0)
     #NRS Float -> Double
-    begin_timestamp = Column(Double)
+    begin_timestamp = Column(Float(precision=2))
     finish_timestamp = Column(Double, default=0)
     # End NRS
     error = Column(String(255))
