@@ -1404,7 +1404,7 @@ class LocalProduct(Base):
     tries = Column(Integer, default=0)
     #NRS Float -> Double
     begin_timestamp = Column(Float(precision=2))
-    finish_timestamp = Column(Double, default=0)
+    finish_timestamp = Column(Float(precision=2), default=0)
     # End NRS
     error = Column(String(255))
 
