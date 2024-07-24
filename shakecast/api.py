@@ -499,7 +499,14 @@ def get_users(session=None):
                                            'db_use': True, 'loop': False}}" % (users, 
                                                                                 current_user.shakecast_id))
 
-    return jsonify(users)
+    def sanitizeUserObject(userObject):
+        userDict = vars(userObject)
+        del userDict['password']
+        del userDict['_sa_instance_state']
+        return userDict
+    
+    sanitizedUsers = map(sanitizeUserObject, users)
+    return jsonify(list(sanitizedUsers))
 
 @app.route('/api/users/current', methods=['GET', 'POST'])
 @login_required
