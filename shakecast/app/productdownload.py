@@ -409,8 +409,8 @@ class ProductGrabber(object):
             e = Event(event_id='heartbeat', save=True)
             e.time = time.time()
             e.magnitude = 10
-            e.lat = 0
-            e.lon = 0
+            e.lat = 40.34
+            e.lon = -101.89
             e.title = 'ShakeCast Heartbeat'
             e.place = 'ShakeCast is running'
             e.status = 'new'
