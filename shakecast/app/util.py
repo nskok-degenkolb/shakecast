@@ -36,6 +36,7 @@ class SC(object):
         smtp_username (str): for SMTP access
         smtp_envelope_from (str): Mail to be sent from
         smtp_from (str): Mail to be sent from
+        smtp_test_recipient (str): mail to be sent to (for system test only)
         default_template_new_event (str): New event notification template name
         default_template_inspection (str): Inspection notificaiton template name
         default_template_pdf (str): PDF template name
@@ -79,6 +80,7 @@ class SC(object):
         self.smtp_username = ''
         self.smtp_envelope_from = ''
         self.smtp_from = ''
+        self.smtp_test_recipient = ''
         self.default_template_new_event = ''
         self.default_template_inspection = ''
         self.default_template_pdf = ''
@@ -144,6 +146,7 @@ class SC(object):
         self.smtp_username = conf_json['SMTP']['username']
         self.smtp_envelope_from = conf_json['SMTP']['envelope_from']
         self.smtp_from = conf_json['SMTP']['from']
+        self.smtp_test_recipient = conf_json['SMTP']['test_recipient']
         
         # Notification
         self.default_template_new_event = conf_json['Notification']['default_template_new_event']

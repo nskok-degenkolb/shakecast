@@ -385,6 +385,7 @@ def import_group_dicts(groups=None, _user=None, session=None):
                 spec.notification_format = group['NOTIFICATION'].get('MESSAGE_FORMAT', None)
                 spec.aggregate_group = group['NOTIFICATION'].get('AGGREGATE_GROUP', None)
                 spec.event_type = group['NOTIFICATION'].get('EVENT_TYPE', None)
+                g.product_string = str(group['NOTIFICATION'].get('PRODUCT_TYPE', 'pdf')).lower()
     
     add_facs_to_groups(session=session)
     add_users_to_groups(session=session)
