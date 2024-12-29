@@ -53,7 +53,7 @@ export class MapComponent implements OnInit, OnDestroy {
     initMap() {
         this.map = L.map('map', {
             scrollWheelZoom: false
-        }).setView([51.505, -0.09], 8);
+        }).setView([40.34, -101.89], 5);
 
         this.map.on('moveend', (event) => { this.updateBounds(event); });
 

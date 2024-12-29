@@ -192,7 +192,7 @@ class Facility(Base):
     @in_grid.expression
     def in_grid(cls, grid):
         # check if a point is within the boundaries of the grid
-        return case([(cls.geom_type != 'POINT',  or_(and_(cls.lon_min > grid.lon_min,
+        return case((cls.geom_type != 'POINT',  or_(and_(cls.lon_min > grid.lon_min,
                         cls.lon_min < grid.lon_max,
                         cls.lat_min > grid.lat_min,
                         cls.lat_min < grid.lat_max),
@@ -223,7 +223,7 @@ class Facility(Base):
                 and_(cls.lon_min < grid.lon_max,
                         cls.lon_max > grid.lon_max,
                         cls.lat_min < grid.lat_max,
-                        cls.lat_max > grid.lat_max))),],
+                        cls.lat_max > grid.lat_max))),
         else_ = and_(cls.lon > grid.lon_min,
                         cls.lon < grid.lon_max,
                         cls.lat > grid.lat_min,
@@ -658,12 +658,14 @@ class Group(Base):
                         lon_min=%s,
                         lon_max=%s,
                         lat_min=%s,
-                        lat_max=%s)''' % (self.name,
+                        lat_max=%s,
+                        template=%s)''' % (self.name,
                                           self.facility_type,
                                           self.lon_min,
                                           self.lon_max,
                                           self.lat_min,
-                                          self.lat_max)
+                                          self.lat_max,
+                                          self.template)
 
     def __str__(self):
         return self.name
@@ -1028,9 +1030,11 @@ class Event(Base):
         events = []
 
         for each_id in ids:
-            stmt = (select([Event.__table__.c.event_id])
+            stmt = (select(Event.__table__.c.event_id)
                     .where(Event.__table__.c.event_id == each_id))
-            result = engine.execute(stmt)
+            
+            with engine.connect() as con:
+                result = con.execute(stmt)
             events += [row for row in result]
 
         return not bool(events)
@@ -1223,11 +1227,12 @@ class ShakeMap(Base):
         """
         Returns 0 for false and an integer count of old shakemaps for true
         """
-        stmt = (select([ShakeMap.__table__.c.shakecast_id])
+        stmt = (select(ShakeMap.__table__.c.shakecast_id)
                 .where(and_(ShakeMap.__table__.c.shakemap_id == self.shakemap_id,
                             ShakeMap.__table__.c.shakemap_version < self.shakemap_version)))
 
-        result = engine.execute(stmt)
+        with engine.connect() as con:
+            result = con.execute(stmt)
         old_shakemaps = [row for row in result]
 
         return len(old_shakemaps)

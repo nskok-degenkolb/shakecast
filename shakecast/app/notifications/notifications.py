@@ -19,7 +19,7 @@ jinja_env = Environment(extensions=['jinja2.ext.do'])
 
 
 def get_image(image_path):
-    default_image = os.path.join(sc_dir(),'view','assets', 'sc_logo.jpg')
+    default_image = os.path.join(sc_dir(),'view','assets', 'sc_logo.png')
     try:
         image = open(image_path, 'rb')
     except Exception:
@@ -71,46 +71,44 @@ def new_event_notification(notifications=None,
     mime_message = MIMEText(message, message_type)
     msg.attach(mime_message)
 
-    # get and attach map
-    for count,event in enumerate(events):
-        # get and attach shakemap
-        if len(event.shakemaps) > 0:
-            shakemap = event.shakemaps[-1]
-            msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
-            msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
-            msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
-            msg.attach(msg_shakemap)        
-        else:
+    # find the ShakeCast logo
+    temp_manager = TemplateManager()
+    configs = temp_manager.get_configs('new_event', 
+                                        name=group.template)
+    logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
+
+    if configs.get('text_only', False) is False:
+        # get and attach map
+        for count,event in enumerate(events):
             map_image = get_image(os.path.join(event.directory_name,
                                         'image.png'))
+
             msg_gmap = MIMEImage(map_image.read(), _subtype='png')
             map_image.close()
             
             msg_gmap.add_header('Content-ID', 'gmap{0}_{1}'.format(count, notification.shakecast_id))
             # NRS remove - msg_gmap.add_header('Content-Disposition', 'attachment', filename='gmap_{0}.png'.format(notification.shakecast_id))
             msg.attach(msg_gmap)
-    
-    # do not attach header or logo if plain message (MMS)
-    if message_type == 'plain':
-        # do not add logo
-        pass
-    else:
-        # find the ShakeCast logo
-        temp_manager = TemplateManager()
-        configs = temp_manager.get_configs('new_event', name=notification.group.template)
-        logo_str = os.path.join(sc_dir(), 'view', 'assets', configs['logo'])
-    
+
+            # get and attach shakemap
+            if len(event.shakemaps) > 0:
+                shakemap = event.shakemaps[-1]
+                msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
+                msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
+                msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
+                msg.attach(msg_shakemap)
+
         # open logo and attach it to the message
         logo_file = get_image(logo_str)
-        msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
+        msg_image = MIMEImage(logo_file.read(), _subtype='png')
         logo_file.close()
         msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
-        # msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+        #NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
         msg.attach(msg_image)
-    
+        
         # attach a header if it's needed
         if configs.get('header'):
-            header_str = os.path.join(sc_dir(), 'view', 'assets', configs['header'])
+            header_str = os.path.join(sc_dir(),'view','assets',configs['header'])
             if os.path.isfile(header_str):
                 header_file = get_image(header_str)
                 msg_image = MIMEImage(header_file.read(), _subtype='jpeg')
@@ -118,8 +116,7 @@ def new_event_notification(notifications=None,
                 msg_image.add_header('Content-ID', 'header')
                 msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
                 msg.attach(msg_image)
-    # end plain message formatting
-    
+
     mailer = Mailer()
     me = mailer.me
 
@@ -129,7 +126,7 @@ def new_event_notification(notifications=None,
     # get notification destination based on notification format
     you = [user.__dict__[not_format] for user in group.users
             if user.__dict__.get(not_format, False)]
-
+    #NRS start
     # Remove scenario from the group name
     group_str = (group.name).lower()
     if group_str.find('_scenario') > -1:
@@ -140,12 +137,14 @@ def new_event_notification(notifications=None,
         groupFormat_str = group_str.capitalize()
     else:
         groupFormat_str = group_str.upper()
-        
+    #NRS End
+    
     if len(you) > 0:
         if len(events) == 1:
+            #NRS Start
             #subject = event.title
-
             subject = '{0} EQ - {1}'.format(groupFormat_str, event.title)
+            #End NRS
         else:
             mags = []
             for e in events:
@@ -153,10 +152,10 @@ def new_event_notification(notifications=None,
                     mags += ['None']
                 else:
                     mags += [e.magnitude]
-
-            subject = '{0} - {1} New Events - Magnitudes: {2}'.format(groupFormat_str,len(events),
-                                                                        str(mags).replace("'", ''))
-
+            #NRS Start
+            #subject = '{0} New Events -- Magnitudes: {1}'.format(len(events),str(mags).replace("'", ''))
+            subject = '{0} - {1} New Events - Magnitudes: {2}'.format(groupFormat_str,len(events),str(mags).replace("'", ''))
+            #END NRS
         if scenario is True:
             subject = 'SCENARIO: ' + subject
 
@@ -205,8 +204,8 @@ def inspection_notification(notification=None,
     if has_alert_level and new_inspection:
         try:
             #initiate message
-            msg = MIMEMultipart('related')
-                      
+            msg = MIMEMultipart()
+            
             #NRS condition to handle update cases
             if update:
                 config_template_type = 'update'
@@ -217,40 +216,65 @@ def inspection_notification(notification=None,
             # build the notification
             print('Generating html...')
             not_builder = NotificationBuilder()
+            
+            #NRS start 
+            #message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template)
             message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template, config_template_type=config_template_type)
-            print('html Done.') 
+            #NRS End
             
-            
+            print('Done.')
             # attach html
             message_type = 'html' if '<html>' in message else 'plain'
             mime_message = MIMEText(message, message_type)
             msg.attach(mime_message)
 
-            # get and attach shakemap
-            msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
-            msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
-            msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
-            msg.attach(msg_shakemap)
-            
+            # check for and attach local products
+            for product in shakemap.local_products:
+                if product.error or product.group != group:
+                    continue
+
+                try:
+                    #content = product.read()
+                    #attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
+                    #attach_product.add_header('Content-Disposition', 'attachment', filename=product.name)
+                    #msg.attach(attach_product)
+                    #print('Attached: {}'.format(product.product_type.name))
+                    #NRS Start
+                    myTime = time.strftime("%y%m%d",time.localtime())
+                     
+                    if ((product.name).lower()).find('providence') > -1 :
+                        myProductName = (((product.name).lower()).replace('_impact.pdf','')).capitalize()
+                    else:
+                        myProductName = (product.name).replace('_impact.pdf','')
+                    myShakemapID = '{0}-{1}'.format(shakemap.shakemap_id,shakemap.shakemap_version)
+                    attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
+                    attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Assessment_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
+                    msg.attach(attach_product)
+                    print('Attached: {}'.format(product.product_type.name))
+                    #NRS End
+                except Exception as e:
+                    print('Unable to attach: {}'.format(product.product_type.name))
+                    product.error = 'Unable to attach to email'
+
             # find the ShakeCast logo
             temp_manager = TemplateManager()
-            
-            
-            configs = temp_manager.get_configs(config_template_type,
-                                        name=notification.group.template)
+            configs = temp_manager.get_configs('inspection',
+                                        name=group.template)
             logo_str = os.path.join(sc_dir(),'view','assets',configs['logo'])
 
-            # do not attach header or logo if plain message (MMS)
-            if message_type == 'plain':
-                # do not add logo
-                pass
-            else:
+            if configs.get('text_only', False) is False:
+                # get and attach shakemap
+                msg_shakemap = MIMEImage(shakemap.get_map(), _subtype='jpeg')
+                msg_shakemap.add_header('Content-ID', 'shakemap{0}'.format(shakemap.shakecast_id))
+                msg_shakemap.add_header('Content-Disposition', 'attachment', filename='intensity_{0}.jpg'.format(shakemap.shakecast_id))
+                msg.attach(msg_shakemap)
+                
                 # open logo and attach it to the message
                 logo_file = open(logo_str, 'rb')
-                msg_image = MIMEImage(logo_file.read(), _subtype='jpeg')
+                msg_image = MIMEImage(logo_file.read(), _subtype='png')
                 logo_file.close()
                 msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
-                # NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.jpg')
+                #NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
                 msg.attach(msg_image)
                 
                 # attach a header if it's needed
@@ -263,29 +287,6 @@ def inspection_notification(notification=None,
                         msg_image.add_header('Content-ID', 'header')
                         msg_image.add_header('Content-Disposition', 'attachment', filename='header.jpg')
                         msg.attach(msg_image)
-            
-            # check for and attach local products
-            for product in shakemap.local_products:
-                if product.error or product.group != group:
-                    continue
-
-                try:
-                    content = product.read()
-                    # NRS addition, try to format the name of the pdf attached. 
-                    myTime = time.strftime("%y%m%d",time.localtime())
-                     
-                    if ((product.name).lower()).find('providence') > -1 :
-                        myProductName = (((product.name).lower()).replace('_impact.pdf','')).capitalize()
-                    else:
-                        myProductName = (product.name).replace('_impact.pdf','')
-                    myShakemapID = '{0}-{1}'.format(shakemap.shakemap_id,shakemap.shakemap_version)
-                    attach_product = MIMEApplication(content, _subtype=product.product_type.subtype)
-                    attach_product.add_header('Content-Disposition', 'attachment', filename='{0}rpt_{1}_Post-EQ_Assessment_List_{2}.pdf'.format(myTime,myProductName,myShakemapID))
-                    msg.attach(attach_product)
-                    print('Attached: {}'.format(product.product_type.name))
-                except Exception as e:
-                    print('Unable to attach: {}'.format(product.product_type.name))
-                    product.error = 'Unable to attach to email'
 
             mailer = Mailer()
             me = mailer.me
@@ -298,6 +299,7 @@ def inspection_notification(notification=None,
                     if user.__dict__.get(not_format, False)]
             
             if len(you) > 0:
+                #subject = f'Inspection -  {shakemap.event.title}'
                 # NRS modify subject content
                 event_str = shakemap.event.title
                 #event_str = event_str.replace('\'','')
@@ -312,8 +314,7 @@ def inspection_notification(notification=None,
                     subject = '{0} {1} {2}'.format(group_str.capitalize(),' - Post-EQ Potential Assessment List - ', event_str)
                 else:
                     subject = '{0} {1} {2} {3}'.format('CONFIDENTIAL Assessment - Group:', group_str.upper(),' ', event_str)
-                #subject = f'Inspection -  {shakemap.event.title}'
-
+                #NRS End
                 if scenario is True:
                     subject = 'SCENARIO: ' + subject
                 elif update is True:
@@ -354,7 +355,7 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
 
     # Check that the inspection status merits a sent notification
     alert_level = shakemap.get_alert_level(group)
-
+    
     #NRS - do not send an inspection if alert_level is gray or None. A group is determined to be affected by an event if it is present within shakemap boundaries. The original code would send a new inspection notification regardless of alert_level. 
     if (alert_level is None) or (alert_level == 'gray'):
     #if (alert_level is None):
@@ -363,9 +364,14 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
     else:
         new_inspection = True
         update = False
-    # End NRS modificaiton 
+    # End NRS modification 
     
     # check if inspection list has changed
+    #NRS Start
+    #new_inspection = True
+    #update = False
+    #NRS End
+    
     if shakemap.old_maps():
         update = True
         new_inspection = False
@@ -380,14 +386,11 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
         prev_alert_level = previous_map.get_alert_level(group)
 
         # ignore changes if they don't merit inspection (grey and None)
-        # Start NRS - add third condition if previous alert is third condition if previous alert is none and new is gray then do not send a notification.
+        #Start NRS - add a third condition if previous alert is none and new is gray then do not send a notification.
         if (((prev_alert_level is None) and (alert_level is None)) or
-                ((prev_alert_level == 'gray') and (alert_level == 'gray')) or 
+                ((prev_alert_level == 'gray') and (alert_level == 'gray')) or
                 ((prev_alert_level is None) and (alert_level == 'gray'))):
             new_inspection = False
-        # End NRS
-#        if ((prev_alert_level is None) and (alert_level is None)):
-#            new_inspection = False
         # End NRS
 
         # if overall inspection level changes, send notification
@@ -404,7 +407,7 @@ def check_notification_for_group(group, notification, session=None, scenario=Fal
                         previous_map.facility_shaking[idx].facility.facility_id):
                     new_inspection = True
                     break
-    
+
     return group.has_alert_level(alert_level, scenario), new_inspection, update
 
 

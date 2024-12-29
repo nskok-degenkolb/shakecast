@@ -21,6 +21,7 @@ class Mailer(object):
         self.server_port = env.SMTP_PORT
         self.security = env.SMTP_SECURITY
         self.notify = bool(env.SMTP_SEND_NOTIFICATIONS)
+        self.test_recipient = env.SMTP_TEST_RECIPIENT
         
     def send(self, msg=None, you=None, debug=False):
         """

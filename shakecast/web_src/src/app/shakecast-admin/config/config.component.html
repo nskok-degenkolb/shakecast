@@ -33,7 +33,7 @@
 
             <div *ngIf="configs.DBConnection.type == 'mysql'">
                 <h3 id="db-str">
-                    {{configs.DBConnection.username}}:{{'*'.repeat(configs.DBConnection.password.length)}}@{{configs.DBConnection.server}}/pycast
+                    {{configs.DBConnection.username}}:{{'*'.repeat(configs.DBConnection.password.length)}}&#64;{{configs.DBConnection.server}}/pycast
                     </h3>
                 <input placeholder="Username" type="text" [(ngModel)]="configs.DBConnection.username">
                 <input placeholder="Password" type="password" [(ngModel)]="configs.DBConnection.password">

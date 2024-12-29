@@ -38,8 +38,8 @@ export const shakecastRoutes: Routes = [
     },
     {
         path: 'shakecast',
-        loadChildren: 'app/shakecast/shakecast.module#ShakeCastModule'
+        loadChildren: () => import('../../app/shakecast/shakecast.module').then(m => m.ShakeCastModule)
     }
 ]
 
-export const routing: ModuleWithProviders = RouterModule.forChild(appRoutes);
+export const routing: ModuleWithProviders<RouterModule> = RouterModule.forChild(appRoutes);

@@ -24,7 +24,8 @@
         "server": "smtp.gmail.com", 
         "security": "TLS", 
         "password": "", 
-        "port": 587
+        "port": 587,
+        "test_recipient": ""
     }, 
     "Server": {
         "update": {
