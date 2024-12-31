@@ -99,12 +99,12 @@ def new_event_notification(notifications=None,
                 msg.attach(msg_shakemap)
 
         # open logo and attach it to the message
-        #NRS remove - logo_file = get_image(logo_str)
-        #NRS remove - msg_image = MIMEImage(logo_file.read(), _subtype='png')
-        #NRS remove - logo_file.close()
-        #NRS remove - msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
+        logo_file = get_image(logo_str)
+        msg_image = MIMEImage(logo_file.read(), _subtype='png')
+        logo_file.close()
+        msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(notification.shakecast_id))
         #NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
-        #NRS remove - msg.attach(msg_image)
+        msg.attach(msg_image)
         
         # attach a header if it's needed
         if configs.get('header'):
@@ -270,12 +270,12 @@ def inspection_notification(notification=None,
                 msg.attach(msg_shakemap)
                 
                 # open logo and attach it to the message
-                #NRS remove - logo_file = open(logo_str, 'rb')
-                #NRS remove - msg_image = MIMEImage(logo_file.read(), _subtype='png')
-                #NRS remove - logo_file.close()
-                #NRS remove- msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
+                logo_file = open(logo_str, 'rb')
+                msg_image = MIMEImage(logo_file.read(), _subtype='png')
+                logo_file.close()
+                msg_image.add_header('Content-ID', 'sc_logo_{0}'.format(shakemap.shakecast_id))
                 #NRS remove - msg_image.add_header('Content-Disposition', 'attachment', filename='sc_logo.png')
-                #NRS remove - msg.attach(msg_image)
+                msg.attach(msg_image)
                 
                 # attach a header if it's needed
                 if configs.get('header'):
