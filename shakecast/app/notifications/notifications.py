@@ -240,6 +240,7 @@ def inspection_notification(notification=None,
                     #msg.attach(attach_product)
                     #print('Attached: {}'.format(product.product_type.name))
                     #NRS Start
+                    content = product.read()
                     myTime = time.strftime("%y%m%d",time.localtime())
                      
                     if ((product.name).lower()).find('providence') > -1 :
