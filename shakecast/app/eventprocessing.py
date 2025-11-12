@@ -80,7 +80,7 @@ def check_new(session=None):
     return data
 
 
-def create_new_event_notifications(groups, event, scenario=False):
+def create_new_event_notifications(groups, event, scenario=False, session=None):
     notifications = []
     for group in groups:
         # check new_event magnitude to make sure the group wants a
@@ -96,7 +96,7 @@ def create_new_event_notifications(groups, event, scenario=False):
                                     event=event,
                                     notification_type='NEW_EVENT',
                                     status='created')
-        #NRS try chatgpt suggestion for error
+        #NRS try chatgpt suggestion for error - also added session = None to function
         session.add(notification)
         # End NRS
         notifications += [notification]
@@ -104,7 +104,7 @@ def create_new_event_notifications(groups, event, scenario=False):
     return notifications
 
 
-def create_inspection_notifications(groups, shakemap, scenario=False):
+def create_inspection_notifications(groups, shakemap, scenario=False, session=None):
     notifications = []
     for group in groups:
         notification = Notification(group=group,
@@ -112,7 +112,7 @@ def create_inspection_notifications(groups, shakemap, scenario=False):
                                     event=shakemap.event,
                                     notification_type='DAMAGE',
                                     status='created')
-        #NRS try chatgpt suggestion for error
+        #NRS try chatgpt suggestion for error - also added session = None to function
         session.add(notification)
         # End NRS
         notifications += [notification]
