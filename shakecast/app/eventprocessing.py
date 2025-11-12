@@ -96,7 +96,9 @@ def create_new_event_notifications(groups, event, scenario=False):
                                     event=event,
                                     notification_type='NEW_EVENT',
                                     status='created')
-
+        #NRS try chatgpt suggestion for error
+        session.add(notification)
+        # End NRS
         notifications += [notification]
 
     return notifications
@@ -110,6 +112,9 @@ def create_inspection_notifications(groups, shakemap, scenario=False):
                                     event=shakemap.event,
                                     notification_type='DAMAGE',
                                     status='created')
+        #NRS try chatgpt suggestion for error
+        session.add(notification)
+        # End NRS
         notifications += [notification]
 
     return notifications
