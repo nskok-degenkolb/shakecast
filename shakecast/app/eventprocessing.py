@@ -232,10 +232,12 @@ def process_events(events=None, session=None, scenario=False):
 
             event.status = 'processing_started'
             print('Processing event...')
+            # NRS mod add session to function
             new_notifications = create_new_event_notifications(
                 groups_affected,
                 event,
-                scenario)
+                scenario,
+                session=session)
             session.add_all(new_notifications)
             session.commit()
 
@@ -342,9 +344,9 @@ def process_shakemaps(shakemaps=None, session=None, scenario=False):
             session.commit()
             continue
 
-        # send out new events and create inspection notifications
+        # send out new events and create inspection notifications - NRS mod add session
         new_notifications = create_inspection_notifications(
-            groups_affected, shakemap, scenario)
+            groups_affected, shakemap, scenario, session=session)
 
         session.add_all(new_notifications)
         session.commit()
