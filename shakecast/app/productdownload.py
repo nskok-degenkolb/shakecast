@@ -341,6 +341,9 @@ class ProductGrabber(object):
                 if product is None:
                     product = Product(shakemap=shakemap,
                                       product_type=product_name)
+                    #NRS add chatgpt fix for fix of SQAlchemy error 
+                    session.add(product)
+                    # End NRS
 
                 try:
                     product_file_name = os.path.join(
