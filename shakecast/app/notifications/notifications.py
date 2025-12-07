@@ -11,12 +11,103 @@ import time
 from ..products.geojson import generate_impact_geojson
 from .builder import NotificationBuilder
 from .mailer import Mailer
+from .twilio_messenger import TwilioMessenger
 from ..orm import dbconnect, ShakeMap, Notification
 from .templates import TemplateManager
 from ..util import sc_dir, SC, get_template_dir, split_string_on_spaces
 
 jinja_env = Environment(extensions=['jinja2.ext.do'])
 
+# Start Twilio
+MAX_MMS_BODY_LENGTH = 1600
+
+
+def _truncate_mms_body(body):
+    if body is None:
+        return ''
+
+    if len(body) <= MAX_MMS_BODY_LENGTH:
+        return body
+
+    return body[:MAX_MMS_BODY_LENGTH - 3] + '...'
+
+
+def _format_event_summary(event):
+    parts = []
+    magnitude = getattr(event, 'magnitude', None)
+    if magnitude is not None:
+        parts.append('M{:.1f}'.format(float(magnitude)))
+
+    location = getattr(event, 'place', None) or getattr(event, 'title', None)
+    if location:
+        parts.append(str(location))
+
+    timestamp = None
+    try:
+        timestamp = event.timestamp()
+    except Exception:
+        timestamp = None
+
+    if timestamp:
+        parts.append(timestamp)
+
+    return ' - '.join(parts)
+
+
+def _build_new_event_mms_body(subject, events):
+    lines = [subject]
+    for event in events[:3]:
+        summary = _format_event_summary(event)
+        if summary:
+            lines.append(summary)
+
+    if len(events) > 3:
+        lines.append('+ {} more events'.format(len(events) - 3))
+
+    lines = [line for line in lines if line]
+    return _truncate_mms_body('\n'.join(lines))
+
+
+def _build_inspection_mms_body(subject, shakemap, group):
+    lines = [subject]
+
+    alert_level = None
+    try:
+        alert_level = shakemap.get_alert_level(group)
+    except Exception:
+        alert_level = None
+
+    if alert_level:
+        lines.append('Alert level: {}'.format(alert_level.upper()))
+
+    event = getattr(shakemap, 'event', None)
+    if event:
+        summary = _format_event_summary(event)
+        if summary:
+            lines.append(summary)
+
+    impact_summary = None
+    try:
+        impact_summary = shakemap.get_impact_summary(group)
+    except Exception:
+        impact_summary = None
+
+    if impact_summary and impact_summary.get('all'):
+        facility_line = 'Facilities impacted: {}'.format(impact_summary['all'])
+        detail_counts = []
+        for level in ['red', 'orange', 'yellow', 'green']:
+            count = impact_summary.get(level)
+            if count:
+                detail_counts.append('{}:{}'.format(level[0].upper(), count))
+
+        if detail_counts:
+            facility_line += ' ({})'.format(', '.join(detail_counts))
+
+        lines.append(facility_line)
+
+    lines = [line for line in lines if line]
+    return _truncate_mms_body('\n'.join(lines))
+# End Twilio
 
 def get_image(image_path):
     default_image = os.path.join(sc_dir(),'view','assets', 'sc_logo.png')
@@ -143,7 +234,8 @@ def new_event_notification(notifications=None,
         if len(events) == 1:
             #NRS Start
             #subject = event.title
-            subject = '{0} EQ - {1}'.format(groupFormat_str, event.title)
+            single_event = events[0]
+            subject = '{0} EQ - {1}'.format(groupFormat_str, single_event.title)
             #End NRS
         else:
             mags = []
@@ -158,18 +250,32 @@ def new_event_notification(notifications=None,
             #END NRS
         if scenario is True:
             subject = 'SCENARIO: ' + subject
-
-        msg['Subject'] = subject
-        msg['To'] = ', '.join(you)
-        msg['From'] = me
         
-        print('Sending notification...')
-        mailer.send(msg=msg, you=you)
-        print('Done.')
-        
-        notification.status = 'sent'
-        notification.sent_timestamp = time.time()
+        # Twilio Add
+        if not_format == 'mms':
+            mms_body = _build_new_event_mms_body(subject, events)
+            try:
+                messenger = TwilioMessenger()
+                messenger.send_mms(body=mms_body, recipients=you)
+                print('MMS notification sent.')
+                notification.status = 'sent'
+                notification.sent_timestamp = time.time()
+            except Exception as exc:
+                print('Notification failed via MMS: {}'.format(exc))
+                notification.status = 'send failed'
+                notification.error = str(exc)
+        else:
+            msg['Subject'] = subject
+            msg['To'] = ', '.join(you)
+            msg['From'] = me
 
+            print('Sending notification...')
+            mailer.send(msg=msg, you=you)
+            print('Done.')
+
+            notification.status = 'sent'
+            notification.sent_timestamp = time.time()
+        # End Twilio
     else:
         print('Notification not sent due to lack of users')
         notification.status = 'not sent - no users'
@@ -320,17 +426,32 @@ def inspection_notification(notification=None,
                     subject = 'SCENARIO: ' + subject
                 elif update is True:
                     subject = 'UPDATE: ' + subject
-                    
 
-                msg['Subject'] = subject
-                msg['To'] = ', '.join(you)
-                msg['From'] = me
-                
-                mailer.send(msg=msg, you=you)
-                
-                notification.status = 'sent'
-                notification.sent_timestamp = time.time()
-                print('Notification sent.')
+                #Twilio Add
+                if not_format == 'mms':
+                    mms_body = _build_inspection_mms_body(subject, shakemap, group)
+                    try:
+                        messenger = TwilioMessenger()
+                        messenger.send_mms(body=mms_body, recipients=you)
+                        notification.status = 'sent'
+                        notification.sent_timestamp = time.time()
+                        print('MMS inspection notification sent.')
+                    except Exception as exc:
+                        print('Inspection notification failed via MMS: {}'.format(exc))
+                        notification.status = 'send failed'
+                        notification.error = str(exc)
+                else:
+                    msg['Subject'] = subject
+                    msg['To'] = ', '.join(you)
+                    msg['From'] = me
+
+                    mailer.send(msg=msg, you=you)
+
+                    notification.status = 'sent'
+                    notification.sent_timestamp = time.time()
+                    print('Notification sent.')
+                    # End Twilio
+                    
             else:
                 print('Notification not sent: no users.')
                 notification.status = 'not sent - no users'
