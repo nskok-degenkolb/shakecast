@@ -22,6 +22,13 @@ SMTP_SERVER = os.environ.get('SHAKECAST_SMTP_SERVER', sc.dict['SMTP']['server'])
 SMTP_USERNAME = os.environ.get('SHAKECAST_SMTP_USERNAME', sc.dict['SMTP']['username'])
 SMTP_SEND_NOTIFICATIONS = int(os.environ.get('SHAKECAST_SMTP_SEND_NOTIFICATIONS', 1))
 SMTP_TEST_RECIPIENT = os.environ.get('SHAKECAST_SMTP_TEST_RECIPIENT', sc.dict['SMTP']['test_recipient'])
+# Twilio
+TWILIO_ACCOUNT_SID = os.environ.get('SHAKECAST_TWILIO_ACCOUNT_SID', sc.dict['Twilio_Info']['account_SID'])
+TWILIO_AUTH_TOKEN = os.environ.get('SHAKECAST_TWILIO_AUTH_TOKEN', sc.dict['Twilio_Info']['auth_token'])
+TWILIO_FROM_NUMBER = os.environ.get('SHAKECAST_TWILIO_FROM_NUMBER', sc.dict['Twilio_Info']['from_number'])
+TWILIO_MESSAGING_SERVICE_SID = os.environ.get('SHAKECAST_TWILIO_MESSAGING_SERVICE_SID', '')
+TWILIO_SEND_NOTIFICATIONS = int(os.environ.get('SHAKECAST_TWILIO_SEND_NOTIFICATIONS', 0))
+# End Twilio 
 
 from pathlib import Path
 home = str(Path.home())
