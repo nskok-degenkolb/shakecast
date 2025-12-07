@@ -860,9 +860,14 @@ class Group(Base):
         format_ = str(spec.notification_format).lower()
 
         # Catch mms and sms messages
-        if (format_ == 'mms') or (format_ == 'sms'):
-            return 'mms'
+        #if (format_ == 'mms') or (format_ == 'sms'):
+        #    return 'mms'
 
+        #NRS Twilio Update
+        if "_mms" or "_sms" in format_:
+            return 'mms'
+        #End NRS
+        
         # Return email as default
         return 'email'
 
