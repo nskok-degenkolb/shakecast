@@ -864,7 +864,7 @@ class Group(Base):
         #    return 'mms'
 
         #NRS Twilio Update
-        if "mms" or "sms" in format_:
+        if "mms" in format_:
             return 'mms'
         #End NRS
         
