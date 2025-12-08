@@ -100,6 +100,7 @@ class SC(object):
         self.twilio_account_SID = ''
         self.twilio_auth_token = ''
         self.twilio_from_number = ''
+        self.twilio_send_notifications = ''
         #End NRS
 
         self.load()
@@ -175,6 +176,7 @@ class SC(object):
         self.twilio_account_SID = conf_json['Twilio_Info']['account_SID']
         self.twilio_auth_token = conf_json['Twilio_Info']['auth_token']
         self.twilio_from_number = conf_json['Twilio_Info']['from_number']
+        self.twilio_send_notifications = conf_json['Twilio_Info']['send_notifications']
         #NRS End
 
     @staticmethod
