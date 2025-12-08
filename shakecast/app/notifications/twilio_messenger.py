@@ -28,7 +28,7 @@ class TwilioMessenger:
         print("Auth Token " + env.TWILIO_AUTH_TOKEN )
         print("From Number " + env.TWILIO_FROM_NUMBER )
         print("Service SID " + env.TWILIO_MESSAGING_SERVICE_SID )
-        #print("self notify" + bool(env.TWILIO_SEND_NOTIFICATIONS))
+        print("self notify " + str(bool(env.TWILIO_SEND_NOTIFICATIONS)))
     @property
     def enabled(self) -> bool:
         """Return True when Twilio notifications are configured."""
