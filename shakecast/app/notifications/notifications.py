@@ -145,6 +145,7 @@ def new_event_notification(notifications=None,
         n.status = 'aggregated'
 
     print('Generating HTML...')
+    print("Group:" + (group.name).lower())   
     # create HTML for the event email
     not_builder = NotificationBuilder()
     message = not_builder.build_new_event_html(events=events, notification=notification, name=group.template)
@@ -321,6 +322,7 @@ def inspection_notification(notification=None,
             
             # build the notification
             print('Generating html...')
+            print("Group:" + (group.name).lower())
             not_builder = NotificationBuilder()
             
             #NRS start 
