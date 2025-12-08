@@ -96,6 +96,12 @@ class SC(object):
         self.map_key = ''
         self.gsm_only = False 
 
+        #NRS Twilio Add
+        self.twilio_account_SID = ''
+        self.twilio_auth_token = ''
+        self.twilio_from_number = ''
+        #End NRS
+
         self.load()
     
     def load(self):
@@ -164,7 +170,13 @@ class SC(object):
         self.server_name = conf_json['Server']['name']
         self.server_dns = conf_json['Server']['DNS']
         self.software_version = conf_json['Server']['update']['software_version']
-    
+
+        #NRS Twilio
+        self.twilio_account_SID = conf_json['Twilio_Info']['account_SID']
+        self.twilio_auth_token = conf_json['Twilio_Info']['auth_token']
+        self.twilio_from_number = conf_json['Twilio_Info']['from_number']
+        #NRS End
+
     @staticmethod
     def validate(self, json_str=None):
         return True
