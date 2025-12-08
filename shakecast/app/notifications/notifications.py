@@ -258,6 +258,7 @@ def new_event_notification(notifications=None,
             mms_body = _build_new_event_mms_body(subject, events)
             try:
                 messenger = TwilioMessenger()
+                print("Recipient = " + str(you))
                 messenger.send_mms(body=mms_body, recipients=you)
                 print('MMS notification sent.')
                 notification.status = 'sent'
