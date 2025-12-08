@@ -253,6 +253,7 @@ def new_event_notification(notifications=None,
             subject = 'SCENARIO: ' + subject
         
         # Twilio Add
+        print("Format " + not_format)
         if not_format == 'mms':
             mms_body = _build_new_event_mms_body(subject, events)
             try:
