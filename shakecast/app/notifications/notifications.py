@@ -31,82 +31,75 @@ def _truncate_mms_body(body):
 
     return body[:MAX_MMS_BODY_LENGTH - 3] + '...'
 
+def _render_mms_template(not_type, template_candidates, context):
+    temp_manager = TemplateManager()
 
-def _format_event_summary(event):
-    parts = []
-    magnitude = getattr(event, 'magnitude', None)
-    if magnitude is not None:
-        parts.append('M{:.1f}'.format(float(magnitude)))
+    for candidate in template_candidates:
+        if not candidate:
+            continue
 
-    location = getattr(event, 'place', None) or getattr(event, 'title', None)
-    if location:
-        parts.append(str(location))
+        normalized_name = os.path.splitext(candidate)[0].lower()
+        template_path = os.path.join(
+            get_template_dir(), not_type, '{}.html'.format(normalized_name)
+        )
 
-    timestamp = None
-    try:
-        timestamp = event.timestamp()
-    except Exception:
-        timestamp = None
+        if not os.path.isfile(template_path):
+            continue
 
-    if timestamp:
-        parts.append(timestamp)
+        config = temp_manager.get_configs(not_type, name=normalized_name)
+        template = temp_manager.get_template(not_type, name=normalized_name)
+        return _truncate_mms_body(template.render(config=config, **context))
 
-    return ' - '.join(parts)
+    config = temp_manager.get_configs(not_type, name='mms')
+    template = temp_manager.get_template(not_type, name='mms')
+    return _truncate_mms_body(template.render(config=config, **context))
+    
+def _build_new_event_mms_body(subject, events, group=None, notification=None):
+    events = sorted(events, key=lambda evt: getattr(evt, 'magnitude', 0), reverse=True)
+    template_candidates = []
+
+    if group and getattr(group, 'template', None):
+        template_candidates.append('{}_mms'.format(group.template))
+
+    template_candidates.append('mms')
+
+    context = {
+        'events': events,
+        'group': group,
+        'notification': notification,
+        'sc': SC(),
+        'subject': subject
+    }
+
+    return _render_mms_template('new_event', template_candidates, context)
 
 
-def _build_new_event_mms_body(subject, events):
-    lines = [subject]
-    for event in events[:3]:
-        summary = _format_event_summary(event)
-        if summary:
-            lines.append(summary)
+def _build_inspection_mms_body(subject, shakemap, group, notification=None):
+    scenario = shakemap.type == 'scenario'
+    alert_levels = group.get_alert_levels(scenario)
+    facility_shaking = [
+        x for x in shakemap.facility_shaking
+        if group in x.facility.groups and x.alert_level in alert_levels
+    ]
+    fac_details = shakemap.get_impact_summary(group)
 
-    if len(events) > 3:
-        lines.append('+ {} more events'.format(len(events) - 3))
+    template_candidates = []
+    if getattr(group, 'template', None):
+        template_candidates.append('{}_mms'.format(group.template))
 
-    lines = [line for line in lines if line]
-    return _truncate_mms_body('\n'.join(lines))
+    template_candidates.append('mms')
 
+    context = {
+        'shakemap': shakemap,
+        'facility_shaking': facility_shaking,
+        'fac_details': fac_details,
+        'notification': notification,
+        'sc': SC(),
+        'subject': subject,
+        'group': group
+    }
 
-def _build_inspection_mms_body(subject, shakemap, group):
-    lines = [subject]
-
-    alert_level = None
-    try:
-        alert_level = shakemap.get_alert_level(group)
-    except Exception:
-        alert_level = None
-
-    if alert_level:
-        lines.append('Alert level: {}'.format(alert_level.upper()))
-
-    event = getattr(shakemap, 'event', None)
-    if event:
-        summary = _format_event_summary(event)
-        if summary:
-            lines.append(summary)
-
-    impact_summary = None
-    try:
-        impact_summary = shakemap.get_impact_summary(group)
-    except Exception:
-        impact_summary = None
-
-    if impact_summary and impact_summary.get('all'):
-        facility_line = 'Facilities impacted: {}'.format(impact_summary['all'])
-        detail_counts = []
-        for level in ['red', 'orange', 'yellow', 'green']:
-            count = impact_summary.get(level)
-            if count:
-                detail_counts.append('{}:{}'.format(level[0].upper(), count))
-
-        if detail_counts:
-            facility_line += ' ({})'.format(', '.join(detail_counts))
-
-        lines.append(facility_line)
-
-    lines = [line for line in lines if line]
-    return _truncate_mms_body('\n'.join(lines))
+    return _render_mms_template('inspection', template_candidates, context)
 # End Twilio
 
 def get_image(image_path):
@@ -255,10 +248,9 @@ def new_event_notification(notifications=None,
         # Twilio Add
         print("Format " + not_format)
         if not_format == 'mms':
-            mms_body = _build_new_event_mms_body(subject, events)
+            mms_body = _build_new_event_mms_body(subject, events, group=group, notification=notification)
             try:
                 messenger = TwilioMessenger()
-                print("Recipient = " + str(you))
                 messenger.send_mms(body=mms_body, recipients=you)
                 print('MMS notification sent.')
                 notification.status = 'sent'
@@ -433,7 +425,7 @@ def inspection_notification(notification=None,
 
                 #Twilio Add
                 if not_format == 'mms':
-                    mms_body = _build_inspection_mms_body(subject, shakemap, group)
+                    mms_body = _build_inspection_mms_body(subject, shakemap, group, notification=notification)
                     try:
                         messenger = TwilioMessenger()
                         messenger.send_mms(body=mms_body, recipients=you)
