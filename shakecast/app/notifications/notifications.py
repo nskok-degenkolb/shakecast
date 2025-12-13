@@ -67,9 +67,10 @@ def _build_new_event_mms_body(subject, events, group=None, notification=None):
     template_candidates = []
 
     if group and getattr(group, 'template', None):
-        template_candidates.append('{}_mms'.format(group.template))
+        #template_candidates.append('{}_mms'.format(group.template))
+        template_candidates.append(str(group.template))
 
-    template_candidates.append('mms')
+    #template_candidates.append('mms')
 
     context = {
         'events': events,
@@ -93,9 +94,10 @@ def _build_inspection_mms_body(subject, shakemap, group, notification=None):
 
     template_candidates = []
     if getattr(group, 'template', None):
-        template_candidates.append('{}_mms'.format(group.template))
+        #template_candidates.append('{}_mms'.format(group.template))
+        template_candidates.append(str(group.template))
 
-    template_candidates.append('mms')
+    # template_candidates.append('mms')
 
     context = {
         'shakemap': shakemap,
