@@ -35,23 +35,31 @@ def _render_mms_template(not_type, template_candidates, context):
     temp_manager = TemplateManager()
 
     for candidate in template_candidates:
+        print("render MMS Template Candidate:" + str(candidate))
+        
         if not candidate:
             continue
 
+        
         normalized_name = os.path.splitext(candidate)[0].lower()
+        print("render MMS Template Normalized Name:" + str(normalized_name))
         template_path = os.path.join(
             get_template_dir(), not_type, '{}.html'.format(normalized_name)
         )
-
+        print("render MMS Template Tempalte Path:" + str(template_path))
         if not os.path.isfile(template_path):
             continue
 
         config = temp_manager.get_configs(not_type, name=normalized_name)
         template = temp_manager.get_template(not_type, name=normalized_name)
+        print("render MMS Template config:" + str(config))
+        print("render MMS Template template:" + str(template))
         return _truncate_mms_body(template.render(config=config, **context))
 
     config = temp_manager.get_configs(not_type, name='mms')
     template = temp_manager.get_template(not_type, name='mms')
+    print("render MMS Template config:" + str(config))
+    print("render MMS Template template:" + str(template))
     return _truncate_mms_body(template.render(config=config, **context))
     
 def _build_new_event_mms_body(subject, events, group=None, notification=None):
