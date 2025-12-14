@@ -20,8 +20,11 @@ from ..util import sc_dir, SC, get_template_dir, split_string_on_spaces
 jinja_env = Environment(extensions=['jinja2.ext.do'])
 
 #NRS Start
-def get_public_shakemap_url(scenario=False,shakemap_id_str=''):
+def get_public_shakemap_url(shakemap_id_str, scenario=False):
     if scenario:
+        if shakemap_id_str.endswith("_scenario"):
+            shakemap_id_str = shakemap_id_str[:-len("_scenario")]
+            print(shakemap_id_str)
         JSON_URL = 'https://earthquake.usgs.gov/fdsnws/scenario/1/query?format=geojson&eventid={0}'.format(shakemap_id_str)
     else:
         # real event
@@ -475,8 +478,9 @@ def inspection_notification(notification=None,
                 #Twilio Add
                 if not_format == 'mms':
                     mms_body = _build_inspection_mms_body(subject, shakemap, group, notification=notification)
-                    print("Shakemap:" + str(shakemap.shakemap_id))
-                    media_url = get_public_shakemap_url(scenario,  str(shakemap.shakemap_id))
+                    print("mms message")
+                    #print("Shakemap:" + str(shakemap.shakemap_id))
+                    media_url = get_public_shakemap_url(shakemap.shakemap_id, scenario)
                     print("media_url" + str(media_url))
                     #media_url = _build_shakemap_media_url(shakemap_intensity_public_url)
                     try:
