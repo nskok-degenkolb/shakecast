@@ -20,7 +20,9 @@ jinja_env = Environment(extensions=['jinja2.ext.do'])
 
 # Start Twilio
 MAX_MMS_BODY_LENGTH = 1600
-
+USGS_SHAKEMAP_IMAGE_URL = (
+    'https://earthquake.usgs.gov/product/shakemap/{event_id}/{version}/download/intensity.jpg'
+)
 
 def _truncate_mms_body(body):
     if body is None:
@@ -30,6 +32,15 @@ def _truncate_mms_body(body):
         return body
 
     return body[:MAX_MMS_BODY_LENGTH - 3] + '...'
+
+def _build_shakemap_media_url(shakemap):
+    event_id = getattr(getattr(shakemap, 'event', None), 'event_id', None)
+    version = getattr(shakemap, 'shakemap_version', None)
+
+    if not event_id or version is None:
+        return None
+
+    return USGS_SHAKEMAP_IMAGE_URL.format(event_id=event_id, version=version)
 
 def _render_mms_template(not_type, template_candidates, context):
     temp_manager = TemplateManager()
@@ -436,9 +447,15 @@ def inspection_notification(notification=None,
                 #Twilio Add
                 if not_format == 'mms':
                     mms_body = _build_inspection_mms_body(subject, shakemap, group, notification=notification)
+                    print("Shakemap:" + str(shakemap))
+                    media_url = _build_shakemap_media_url(shakemap)
                     try:
                         messenger = TwilioMessenger()
-                        messenger.send_mms(body=mms_body, recipients=you)
+                        messenger.send_mms(
+                            body=mms_body, 
+                            recipients=you,
+                            media_urls=[media_url] if media_url else None,
+                        )
                         notification.status = 'sent'
                         notification.sent_timestamp = time.time()
                         print('MMS inspection notification sent.')
@@ -455,7 +472,7 @@ def inspection_notification(notification=None,
 
                     notification.status = 'sent'
                     notification.sent_timestamp = time.time()
-                    print('Notification sent.')
+                    print('Notification Email sent.')
                     # End Twilio
                     
             else:
