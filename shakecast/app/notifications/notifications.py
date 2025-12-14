@@ -7,6 +7,7 @@ import json
 import os
 import shutil
 import time
+import requests
 
 from ..products.geojson import generate_impact_geojson
 from .builder import NotificationBuilder
@@ -17,6 +18,33 @@ from .templates import TemplateManager
 from ..util import sc_dir, SC, get_template_dir, split_string_on_spaces
 
 jinja_env = Environment(extensions=['jinja2.ext.do'])
+
+#NRS Start
+def get_public_shakemap_url(scenario=False,shakemap_id_str=''):
+    if scenario:
+        JSON_URL = 'https://earthquake.usgs.gov/fdsnws/scenario/1/query?format=geojson&eventid={0}'.format(shakemap_id_str)
+    else:
+        # real event
+        JSON_URL = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventid={0}'.format(shakemap_id_str)    
+        print(JSON_URL)
+
+    # Get shakemap-scenario products
+    try:
+        data = requests.get(JSON_URL).json()
+        if scenario:
+            products = data["properties"]["products"]["shakemap-scenario"]
+        else:
+            products = data["properties"]["products"]["shakemap"]
+        
+        # Highest index = last item (USGS orders them ascending by index)
+        latest = products[-1]
+        
+        # Directly access the intensity image URL
+        intensity_url = latest["contents"]["download/intensity.jpg"]["url"]
+        return intensity_url
+    except:
+        print("Error grabbing public shakemap url")
+# End NRS   
 
 # Start Twilio
 MAX_MMS_BODY_LENGTH = 1600
@@ -447,8 +475,10 @@ def inspection_notification(notification=None,
                 #Twilio Add
                 if not_format == 'mms':
                     mms_body = _build_inspection_mms_body(subject, shakemap, group, notification=notification)
-                    print("Shakemap:" + str(shakemap))
-                    media_url = _build_shakemap_media_url(shakemap)
+                    print("Shakemap:" + str(shakemap.event.event_id))
+                    media_url = get_public_shakemap_url(scenario, str(shakemap.event.event_id))
+                    print("media_url" + str(media_url))
+                    #media_url = _build_shakemap_media_url(shakemap_intensity_public_url)
                     try:
                         messenger = TwilioMessenger()
                         messenger.send_mms(
