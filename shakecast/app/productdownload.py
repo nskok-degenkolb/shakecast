@@ -236,18 +236,20 @@ class ProductGrabber(object):
 
                 try:
                     eq_str = url_opener.open(eq_url)
+                    print("product download.py real event eq_str:" + str(eq_str))
                 except Exception as e:
                     self.log += 'Bad EQ URL: {0}'.format(eq_id)
                     continue
 
                 try:
                     eq_info = json.loads(eq_str)
+                    print("product download.py  real event eq_info:" + str(eq_info))
                 except Exception as e:
                     self.log += 'Invalid JSON: {0}'.format(eq_id)
                     continue
             else:
                 eq_info = eq
-
+                print("product download.py scenario eq_info:" + str(eq_info))
             # check if the event has a shakemap
             if ('shakemap' not in list(eq_info['properties']['products'].keys()) and
                     'shakemap-scenario' not in list(eq_info['properties']['products'].keys())):
@@ -277,10 +279,11 @@ class ProductGrabber(object):
                 for idx in range(len(eq_info['properties']['products'][sm_str])):
                     if eq_info['properties']['products'][sm_str][idx]['source'] == 'us':
                         shakemap_json = eq_info['properties']['products'][sm_str][idx]
+                        print("scenario shakemap_json:" + str(shakemap_json))
                         break
             else:
                 shakemap_json = eq_info['properties']['products'][sm_str][0]
-
+                print("real event shakemap_json:" + str(shakemap_json))
             if shakemap_json is None:
                 return
 
@@ -358,7 +361,7 @@ class ProductGrabber(object):
 
                         # download and allow partial products
                         product_download = url_opener.open(product.url)
-
+                        print("product download url:" + str(product.url))
                         # determine if we're writing binary or not
                         if product_name.lower().endswith(('.png', '.jpg', '.jpeg')):
                             mode = 'wb'
