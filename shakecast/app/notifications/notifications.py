@@ -475,8 +475,8 @@ def inspection_notification(notification=None,
                 #Twilio Add
                 if not_format == 'mms':
                     mms_body = _build_inspection_mms_body(subject, shakemap, group, notification=notification)
-                    print("Shakemap:" + str(shakemap.event.event_id))
-                    media_url = get_public_shakemap_url(scenario, str(shakemap.event.event_id))
+                    print("Shakemap:" + str(shakemap.shakemap_id))
+                    media_url = get_public_shakemap_url(scenario,  str(shakemap.shakemap_id))
                     print("media_url" + str(media_url))
                     #media_url = _build_shakemap_media_url(shakemap_intensity_public_url)
                     try:
