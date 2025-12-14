@@ -370,7 +370,10 @@ def inspection_notification(notification=None,
             print('Generating html...')
             print("Group:" + (group.name).lower())
             not_builder = NotificationBuilder()
-            
+            print("shakemap -- " + str(shakemap))
+            print("notification " + str(notification))
+            print("name " + str(group.template))
+            print("config template type " + str(config_template_type))
             #NRS start 
             #message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template)
             message = not_builder.build_insp_html(shakemap, notification=notification, name=group.template, config_template_type=config_template_type)
