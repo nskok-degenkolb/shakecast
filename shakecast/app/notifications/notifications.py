@@ -125,7 +125,7 @@ def _build_new_event_mms_body(subject, events, group=None, notification=None):
     return _render_mms_template('new_event', template_candidates, context)
 
 
-def _build_inspection_mms_body(subject, events, shakemap, group, notification=None):
+def _build_inspection_mms_body(subject, event_str, shakemap, group, notification=None):
     scenario = shakemap.type == 'scenario'
     alert_levels = group.get_alert_levels(scenario)
     facility_shaking = [
@@ -143,7 +143,7 @@ def _build_inspection_mms_body(subject, events, shakemap, group, notification=No
 
     context = {
         'shakemap': shakemap,
-        'events': events,
+        'event_str': event_str,
         'facility_shaking': facility_shaking,
         'fac_details': fac_details,
         'notification': notification,
@@ -481,7 +481,7 @@ def inspection_notification(notification=None,
 
                 #Twilio Add
                 if not_format == 'mms':
-                    mms_body = _build_inspection_mms_body(subject, events, shakemap, group, notification=notification)
+                    mms_body = _build_inspection_mms_body(subject,  event_str, shakemap, group, notification=notification)
                     print("mms message")
                     #print("Shakemap:" + str(shakemap.shakemap_id))
                     media_url = get_public_shakemap_url(shakemap.shakemap_id, scenario)
