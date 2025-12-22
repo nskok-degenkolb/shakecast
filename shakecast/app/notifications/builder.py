@@ -58,6 +58,7 @@ class NotificationBuilder(object):
     
 
         return template.render(shakemap=shakemap,
+                               event=notification.event,
                                facility_shaking=facility_shaking,
                                fac_details=fac_details,
                                notification=notification,
