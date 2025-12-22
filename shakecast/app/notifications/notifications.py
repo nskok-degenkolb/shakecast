@@ -125,7 +125,7 @@ def _build_new_event_mms_body(subject, events, group=None, notification=None):
     return _render_mms_template('new_event', template_candidates, context)
 
 
-def _build_inspection_mms_body(subject, event_str, shakemap, group, notification=None):
+def _build_inspection_mms_body(subject, event, shakemap, group, notification=None):
     scenario = shakemap.type == 'scenario'
     alert_levels = group.get_alert_levels(scenario)
     facility_shaking = [
