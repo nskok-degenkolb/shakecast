@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, String, Float, PrimaryKeyConstraint, Text
 
 ############### DB Migrations ################
 def migrate_1to2(engine):
@@ -197,6 +197,15 @@ def migrate_12to13(engine):
 
     return engine
 
+def migrate_13to14(engine):
+    poly = Column('poly', Text)
+    try:
+        add_column(engine, 'group', poly)
+    except Exception:
+        pass
+
+    return engine
+
 
 def add_column(engine, table_name, column):
     '''
@@ -215,7 +224,7 @@ def add_column(engine, table_name, column):
 # List of database migrations for export
 migrations = [migrate_1to2, migrate_2to3, migrate_3to4, migrate_4to5,
         migrate_5to6, migrate_6to7, migrate_7to8, migrate_8to9, migrate_9to10,
-        migrate_10to11, migrate_11to12, migrate_12to13]
+        migrate_10to11, migrate_11to12, migrate_12to13, migrate_13to14]
 
 def migrate(engine):
     '''
