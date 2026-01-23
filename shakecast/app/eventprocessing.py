@@ -126,12 +126,14 @@ def get_inspection_groups(grid, scenario=False, session=None):
         in_region = (session.query(Group)
                      .filter(Group.in_grid(grid))
                      .all())
+        in_region = [group for group in in_region if group.in_grid(grid)] #polygon update
         groups_affected = [group for group in in_region
                            if group.gets_notification('damage', scenario=True)]
     else:
         in_region = (session.query(Group)
                      .filter(Group.in_grid(grid))
                      .all())
+        in_region = [group for group in in_region if group.in_grid(grid)] #polygon update
         groups_affected = [group for group in in_region
                            if group.gets_notification('damage')]
 
@@ -146,6 +148,7 @@ def get_new_event_groups(event, scenario=False, session=None):
         in_region = (session.query(Group)
                      .filter(Group.point_inside(event))
                      .all())
+        in_region = [group for group in in_region if group.point_inside(event)] #polygon update
         groups_affected = [group for group in in_region
                            if group.gets_notification('new_event', scenario=True)]
 
@@ -154,7 +157,8 @@ def get_new_event_groups(event, scenario=False, session=None):
         groups_affected = (session.query(Group)
                            .filter(Group.point_inside(event))
                            .all())
-
+        groups_affected = [group for group in groups_affected
+                           if group.point_inside(event)] # polygon update
         filtered_groups = [group for group in groups_affected
                            if group.gets_notification('new_event')]
 
