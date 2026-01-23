@@ -305,6 +305,7 @@ def import_group_dicts(groups=None, _user=None, session=None):
         for group in groups:
             name = group.get('GROUP_NAME', None)
             poly = group.get('POLY', None)
+            split_poly = None #polygon update
 
             if poly is not None:
                 # split up the monitoring region
@@ -319,8 +320,9 @@ def import_group_dicts(groups=None, _user=None, session=None):
                 g = Group()
                 g.name = name
                 
-                # check requirements for group and exit if not met
+                # check requirements for group and exit if not met (polygon update)
                 if (name == '' or
+                        not split_poly or
                         len(split_poly) % 2 != 0 or
                         len(split_poly) < 6):
                     continue
@@ -339,17 +341,24 @@ def import_group_dicts(groups=None, _user=None, session=None):
             if split_poly:
                 lats = []
                 lons = []
+                polygon = [] # polygon update
                 for num, lat_lon in enumerate(split_poly):
                     if num % 2 == 0:
-                        lats += [float(lat_lon)]
+                        lat = float(lat_lon)
+                        lats += [lat]
                     else:
-                        lons += [float(lat_lon)]
+                        lon = float(lat_lon)
+                        lons += [lon]
+                        polygon.append([lon, lats[-1]])
                         
                 g.lat_min = min(lats)
                 g.lat_max = max(lats)
                 g.lon_min = min(lons)
                 g.lon_max = max(lons)
-            
+                if polygon and polygon[0] != polygon[-1]:
+                    polygon.append(polygon[0])
+                g.poly = json.dumps(polygon)
+                
             session.add(g)
             if group.get('NOTIFICATION', None) is not None:
                 g.template = group['NOTIFICATION'].get('TEMPLATE', group['NOTIFICATION'].get('MESSAGE_FORMAT', 'DEFAULT'))
@@ -552,7 +561,13 @@ def add_facs_to_groups(session=None):
                     or_(*[Facility.facility_type.like(fac_type)
                     for fac_type in facility_types]))
 
-        group.facilities = query.all()
+        facilities = query.all()
+        if group.poly:
+            facilities = [
+                facility for facility in facilities
+                if group.point_inside(facility)
+            ]
+        group.facilities = facilities
 
 @dbconnect
 def add_users_to_groups(session=None):
