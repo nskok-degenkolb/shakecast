@@ -1,11 +1,12 @@
 import base64
+import json
 from math import floor
 import os
 import sys
 import time
 from functools import wraps
 
-from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, ForeignKey, Table, select
+from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, ForeignKey, Table, Text, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
@@ -635,6 +636,7 @@ class Group(Base):
     lon_max = Column(Float)
     lat_min = Column(Float)
     lat_max = Column(Float)
+    poly = Column(Text)
     template = Column(String(255))
     updated = Column(Integer)
     updated_by = Column(String(32))
@@ -669,6 +671,107 @@ class Group(Base):
 
     def __str__(self):
         return self.name
+
+    def _polygon_coords(self):
+        if not self.poly:
+            return None
+
+        try:
+            coords = json.loads(self.poly)
+        except (json.JSONDecodeError, TypeError):
+            return None
+
+        if not coords:
+            return None
+
+        if coords[0] != coords[-1]:
+            coords = coords + [coords[0]]
+
+        return coords
+
+    @staticmethod
+    def _point_in_polygon(point, polygon):
+        if not polygon:
+            return False
+
+        x = point[0]
+        y = point[1]
+        inside = False
+        j = len(polygon) - 1
+        for i in range(len(polygon)):
+            xi, yi = polygon[i]
+            xj, yj = polygon[j]
+            intersects = ((yi > y) != (yj > y)) and (
+                x < (xj - xi) * (y - yi) / (yj - yi + 0.0) + xi
+            )
+            if intersects:
+                inside = not inside
+            j = i
+        return inside
+
+    @staticmethod
+    def _segments_intersect(p1, p2, q1, q2):
+        def orientation(a, b, c):
+            val = (b[1] - a[1]) * (c[0] - b[0]) - (b[0] - a[0]) * (c[1] - b[1])
+            if val == 0:
+                return 0
+            return 1 if val > 0 else 2
+
+        def on_segment(a, b, c):
+            return (min(a[0], c[0]) <= b[0] <= max(a[0], c[0]) and
+                    min(a[1], c[1]) <= b[1] <= max(a[1], c[1]))
+
+        o1 = orientation(p1, p2, q1)
+        o2 = orientation(p1, p2, q2)
+        o3 = orientation(q1, q2, p1)
+        o4 = orientation(q1, q2, p2)
+
+        if o1 != o2 and o3 != o4:
+            return True
+
+        if o1 == 0 and on_segment(p1, q1, p2):
+            return True
+        if o2 == 0 and on_segment(p1, q2, p2):
+            return True
+        if o3 == 0 and on_segment(q1, p1, q2):
+            return True
+        if o4 == 0 and on_segment(q1, p2, q2):
+            return True
+
+        return False
+
+    def _polygon_intersects_rect(self, polygon, lon_min, lon_max, lat_min, lat_max):
+        if not polygon:
+            return False
+
+        rect = [
+            (lon_min, lat_min),
+            (lon_max, lat_min),
+            (lon_max, lat_max),
+            (lon_min, lat_max)
+        ]
+        rect_edges = [
+            (rect[0], rect[1]),
+            (rect[1], rect[2]),
+            (rect[2], rect[3]),
+            (rect[3], rect[0])
+        ]
+
+        for point in polygon:
+            if lon_min <= point[0] <= lon_max and lat_min <= point[1] <= lat_max:
+                return True
+
+        for corner in rect:
+            if self._point_in_polygon(corner, polygon):
+                return True
+
+        for i in range(len(polygon) - 1):
+            edge = (polygon[i], polygon[i + 1])
+            for rect_edge in rect_edges:
+                if self._segments_intersect(edge[0], edge[1], rect_edge[0], rect_edge[1]):
+                    return True
+
+        return False
 
     @hybrid_method
     def in_grid(self, grid):
@@ -708,6 +811,16 @@ class Group(Base):
 
     @in_grid.expression
     def in_grid(cls, grid):
+        polygon = self._polygon_coords()
+        if polygon:
+            return self._polygon_intersects_rect(
+                polygon,
+                grid.lon_min,
+                grid.lon_max,
+                grid.lat_min,
+                grid.lat_max
+            )
+            
         # check if a point is within the boundaries of the grid
         return or_(and_(cls.lon_min > grid.lon_min,
                         cls.lon_min < grid.lon_max,
@@ -744,6 +857,10 @@ class Group(Base):
 
     @hybrid_method
     def point_inside(self, point):
+        polygon = self._polygon_coords()
+        if polygon:
+            return self._point_in_polygon((point.lon, point.lat), polygon)
+            
         return (self.lat_min <= point.lat and
                 self.lat_max >= point.lat and
                 self.lon_min <= point.lon and
@@ -888,9 +1005,13 @@ class Group(Base):
             'product_string': self.product_string
         }
 
-        geojson.set_coordinates(
-            get_geojson_latlon(geojson['properties'])
-        )
+        polygon = self._polygon_coords()
+        if polygon:
+            geojson.set_coordinates([polygon])
+        else:
+            geojson.set_coordinates(
+                get_geojson_latlon(geojson['properties'])
+            )
 
         return geojson
 
