@@ -811,15 +811,6 @@ class Group(Base):
 
     @in_grid.expression
     def in_grid(cls, grid):
-        polygon = self._polygon_coords()
-        if polygon:
-            return self._polygon_intersects_rect(
-                polygon,
-                grid.lon_min,
-                grid.lon_max,
-                grid.lat_min,
-                grid.lat_max
-            )
             
         # check if a point is within the boundaries of the grid
         return or_(and_(cls.lon_min > grid.lon_min,
