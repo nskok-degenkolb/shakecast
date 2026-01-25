@@ -6,7 +6,7 @@ import sys
 import time
 from functools import wraps
 
-from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, ForeignKey, Table, Text, select
+from sqlalchemy import case, inspect, MetaData, Column, Integer, String, Float, Numeric, ForeignKey, Table, Text, select
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_method, hybrid_property
 from sqlalchemy.orm import relationship
