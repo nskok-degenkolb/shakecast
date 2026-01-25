@@ -1013,7 +1013,7 @@ class GroupSpecification(Base):
     notification_type = Column(String(25))
     event_type = Column(String(25))
     inspection_priority = Column(String(10))
-    minimum_magnitude = Column(Integer)
+    minimum_magnitude = Column(Numeric(4,2)) # NRS update to consider decimal values
     notification_format = Column(String(25))
     aggregate_name = Column(String(25))
 
