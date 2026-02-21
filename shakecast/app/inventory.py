@@ -309,8 +309,19 @@ def import_group_dicts(groups=None, _user=None, session=None):
 
             if poly is not None:
                 # split up the monitoring region
-                split_poly = re.split('\s|;|,', poly)
-                split_poly = [_f for _f in split_poly if _f]
+                if isinstance(poly, str):
+                    try:
+                        split_poly = json.loads(poly)
+                    except (json.JSONDecodeError, TypeError):
+                        ring_strings = [ring for ring in poly.split('|') if ring.strip()]
+                        split_poly = [
+                            [_f for _f in re.split('\s|;|,', ring) if _f]
+                            for ring in ring_strings
+                        ]
+                        if len(split_poly) == 1:
+                            split_poly = split_poly[0]
+                elif isinstance(poly, list):
+                    split_poly = poly
 
             # try to get the group if it exists
             gs = session.query(Group).filter(Group.name == name).all()
@@ -321,10 +332,7 @@ def import_group_dicts(groups=None, _user=None, session=None):
                 g.name = name
                 
                 # check requirements for group and exit if not met (polygon update)
-                if (name == '' or
-                        not split_poly or
-                        len(split_poly) % 2 != 0 or
-                        len(split_poly) < 6):
+                if name == '' or not split_poly:
                     continue
             
                 session.add(g)
@@ -341,23 +349,60 @@ def import_group_dicts(groups=None, _user=None, session=None):
             if split_poly:
                 lats = []
                 lons = []
-                polygon = [] # polygon update
-                for num, lat_lon in enumerate(split_poly):
-                    if num % 2 == 0:
-                        lat = float(lat_lon)
-                        lats += [lat]
+                polygons = []
+
+                # Backward compatible flat list and GeoJSON-style ring lists
+                if (isinstance(split_poly, list) and split_poly and
+                        isinstance(split_poly[0], (list, tuple)) and
+                        len(split_poly[0]) == 2 and
+                        isinstance(split_poly[0][0], (int, float))):
+                    split_poly = [split_poly]
+                elif (isinstance(split_poly, list) and split_poly and
+                        isinstance(split_poly[0], (list, tuple)) and
+                        split_poly[0] and
+                        isinstance(split_poly[0][0], (list, tuple))):
+                    split_poly = [list(ring) for ring in split_poly]
+                elif isinstance(split_poly, list):
+                    split_poly = [split_poly]
+
+                for ring in split_poly:
+                    polygon = []
+                    if not ring:
+                        continue
+
+                    if (isinstance(ring[0], (list, tuple)) and
+                            len(ring[0]) == 2 and
+                            isinstance(ring[0][0], (int, float))):
+                        for lon, lat in ring:
+                            lats.append(float(lat))
+                            lons.append(float(lon))
+                            polygon.append([float(lon), float(lat)])                
                     else:
-                        lon = float(lat_lon)
-                        lons += [lon]
-                        polygon.append([lon, lats[-1]])
+                        if len(ring) % 2 != 0 or len(ring) < 6:
+                            continue
+
+                        for num, lat_lon in enumerate(ring):
+                            if num % 2 == 0:
+                                lat = float(lat_lon)
+                                lats.append(lat)
+                            else:
+                                lon = float(lat_lon)
+                                lons.append(lon)
+                                polygon.append([lon, lats[-1]])
+
+                    if polygon and polygon[0] != polygon[-1]:
+                        polygon.append(polygon[0])
+                    if polygon:
+                        polygons.append(polygon)
+
+                if not polygons:
+                    continue
                         
                 g.lat_min = min(lats)
                 g.lat_max = max(lats)
                 g.lon_min = min(lons)
                 g.lon_max = max(lons)
-                if polygon and polygon[0] != polygon[-1]:
-                    polygon.append(polygon[0])
-                g.poly = json.dumps(polygon)
+                g.poly = json.dumps(polygons if len(polygons) > 1 else polygons[0])
                 
             session.add(g)
             if group.get('NOTIFICATION', None) is not None:
