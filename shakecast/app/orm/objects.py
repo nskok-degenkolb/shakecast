@@ -672,6 +672,16 @@ class Group(Base):
     def __str__(self):
         return self.name
 
+    @staticmethod
+    def _close_ring(ring):
+        if not ring:
+            return None
+
+        if ring[0] != ring[-1]:
+            ring = ring + [ring[0]]
+
+        return ring
+
     def _polygon_coords(self):
         if not self.poly:
             return None
@@ -684,11 +694,33 @@ class Group(Base):
         if not coords:
             return None
 
-        if coords[0] != coords[-1]:
-            coords = coords + [coords[0]]
+        #if coords[0] != coords[-1]:
+        #    coords = coords + [coords[0]]
 
-        return coords
+        #return coords
+        # Backward compatible single-ring polygon
+        if (isinstance(coords, list) and coords and
+                isinstance(coords[0], (list, tuple)) and
+                len(coords[0]) == 2 and
+                isinstance(coords[0][0], (int, float))):
+            return self._close_ring(coords)
 
+        # GeoJSON-style polygon rings (outer ring + optional interior rings)
+        if (isinstance(coords, list) and coords and
+                isinstance(coords[0], (list, tuple))):
+            rings = []
+            for ring in coords:
+                if (isinstance(ring, (list, tuple)) and ring and
+                        isinstance(ring[0], (list, tuple)) and
+                        len(ring[0]) == 2):
+                    closed = self._close_ring(list(ring))
+                    if closed:
+                        rings.append(closed)
+            
+            if rings:
+                return rings
+            return None
+                    
     @staticmethod
     def _point_in_polygon(point, polygon):
         if not polygon:
@@ -740,10 +772,24 @@ class Group(Base):
 
         return False
 
-    def _polygon_intersects_rect(self, polygon, lon_min, lon_max, lat_min, lat_max):
-        if not polygon:
+    #def _polygon_intersects_rect(self, polygon, lon_min, lon_max, lat_min, lat_max):
+    #    if not polygon:
+    def _point_in_polygon_with_holes(self, point, rings):
+        if not rings:
             return False
 
+        outer = rings[0]
+        if not self._point_in_polygon(point, outer):
+            return False
+
+        return not any(self._point_in_polygon(point, hole) for hole in rings[1:])
+
+    def _polygon_intersects_rect(self, rings, lon_min, lon_max, lat_min, lat_max):
+        if not rings:
+            return False
+
+        polygon = rings[0]
+        
         rect = [
             (lon_min, lat_min),
             (lon_max, lat_min),
@@ -762,7 +808,8 @@ class Group(Base):
                 return True
 
         for corner in rect:
-            if self._point_in_polygon(corner, polygon):
+            #if self._point_in_polygon(corner, polygon):
+            if self._point_in_polygon_with_holes(corner, rings):
                 return True
 
         for i in range(len(polygon) - 1):
@@ -775,39 +822,49 @@ class Group(Base):
 
     @hybrid_method
     def in_grid(self, grid):
-        # check if a point is within the boundaries of the grid
-        return ((self.lon_min > grid.lon_min and
-                 self.lon_min < grid.lon_max and
-                 self.lat_min > grid.lat_min and
-                 self.lat_min < grid.lat_max) or
-                (self.lon_min > grid.lon_min and
+        in_bbox = ((self.lon_min > grid.lon_min and
                     self.lon_min < grid.lon_max and
-                    self.lat_max > grid.lat_min and
-                    self.lat_max < grid.lat_max) or
-                (self.lon_max > grid.lon_min and
-                    self.lon_max < grid.lon_max and
                     self.lat_min > grid.lat_min and
                     self.lat_min < grid.lat_max) or
-                (self.lon_max > grid.lon_min and
-                    self.lon_max < grid.lon_max and
-                    self.lat_max > grid.lat_min and
-                    self.lat_max < grid.lat_max) or
-                (self.lon_min < grid.lon_min and
-                    self.lon_max > grid.lon_min and
-                    self.lat_min < grid.lat_min and
-                    self.lat_max > grid.lat_min) or
-                (self.lon_min < grid.lon_min and
-                    self.lon_max > grid.lon_min and
-                    self.lat_min < grid.lat_max and
-                    self.lat_max > grid.lat_max) or
-                (self.lon_min < grid.lon_max and
-                    self.lon_max > grid.lon_max and
-                    self.lat_min < grid.lat_min and
-                    self.lat_max > grid.lat_min) or
-                (self.lon_min < grid.lon_min and
-                    self.lon_max > grid.lon_max and
-                    self.lat_min < grid.lat_min and
-                    self.lat_max > grid.lat_max))
+                   (self.lon_min > grid.lon_min and
+                       self.lon_min < grid.lon_max and
+                       self.lat_max > grid.lat_min and
+                       self.lat_max < grid.lat_max) or
+                   (self.lon_max > grid.lon_min and
+                       self.lon_max < grid.lon_max and
+                       self.lat_min > grid.lat_min and
+                       self.lat_min < grid.lat_max) or
+                   (self.lon_max > grid.lon_min and
+                       self.lon_max < grid.lon_max and
+                       self.lat_max > grid.lat_min and
+                       self.lat_max < grid.lat_max) or
+                   (self.lon_min < grid.lon_min and
+                       self.lon_max > grid.lon_min and
+                       self.lat_min < grid.lat_min and
+                       self.lat_max > grid.lat_min) or
+                   (self.lon_min < grid.lon_min and
+                       self.lon_max > grid.lon_min and
+                       self.lat_min < grid.lat_max and
+                       self.lat_max > grid.lat_max) or
+                   (self.lon_min < grid.lon_max and
+                       self.lon_max > grid.lon_max and
+                       self.lat_min < grid.lat_min and
+                       self.lat_max > grid.lat_min) or
+                   (self.lon_min < grid.lon_min and
+                       self.lon_max > grid.lon_max and
+                       self.lat_min < grid.lat_min and
+                       self.lat_max > grid.lat_max))
+
+        polygon = self._polygon_coords()
+        if polygon:
+            rings = [polygon] if isinstance(polygon[0][0], (int, float)) else polygon
+            return self._polygon_intersects_rect(rings,
+                                                 grid.lon_min,
+                                                 grid.lon_max,
+                                                 grid.lat_min,
+                                                 grid.lat_max)
+
+        return in_bbox            
 
     @in_grid.expression
     def in_grid(cls, grid):
@@ -850,7 +907,10 @@ class Group(Base):
     def point_inside(self, point):
         polygon = self._polygon_coords()
         if polygon:
-            return self._point_in_polygon((point.lon, point.lat), polygon)
+            if isinstance(polygon[0][0], (int, float)):
+                return self._point_in_polygon((point.lon, point.lat), polygon)
+
+            return self._point_in_polygon_with_holes((point.lon, point.lat), polygon)
             
         return (self.lat_min <= point.lat and
                 self.lat_max >= point.lat and
@@ -998,7 +1058,10 @@ class Group(Base):
 
         polygon = self._polygon_coords()
         if polygon:
-            geojson.set_coordinates([polygon])
+            if isinstance(polygon[0][0], (int, float)):
+                geojson.set_coordinates([polygon])
+            else:
+                geojson.set_coordinates(polygon)
         else:
             geojson.set_coordinates(
                 get_geojson_latlon(geojson['properties'])
