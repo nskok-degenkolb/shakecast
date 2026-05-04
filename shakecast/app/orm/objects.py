@@ -677,10 +677,20 @@ class Group(Base):
         if not ring:
             return None
 
-        if ring[0] != ring[-1]:
-            ring = ring + [ring[0]]
+        normalized = []
+        for point in ring:
+            if (not isinstance(point, (list, tuple)) or
+                    len(point) < 2):
+                continue
+            normalized.append([point[0], point[1]])
 
-        return ring
+        if not normalized:
+            return None
+
+        if normalized[0] != normalized[-1]:
+            normalized = normalized + [normalized[0]]
+            
+        return normalized
 
     def _polygon_coords(self):
         if not self.poly:
